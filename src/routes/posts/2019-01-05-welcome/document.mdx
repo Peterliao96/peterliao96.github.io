@@ -1,6 +1,8 @@
 import naviLogo from './navi-logo.svg'
 import reactLogo from './react-logo.svg'
 import styles from './document.module.css'
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
 
 <div className={styles["Welcome"]}>
 
@@ -54,6 +56,19 @@ It follows a convention-over-configuation philosophy. It should work out of the 
 
 Finally, an effort has been made to prefer explicit code over concise code, and simplicity over complexity. Magic is avoided wherever possible, even if this means more code is required for the desired result.
 
+## Some Math
+
+<InlineMath>
+{'\\text{React-}\\KaTeX \\space \\text{usage examples}\\space'}
+</InlineMath>
+and
+<InlineMath math={'\\space\\int_0^\\infty x^2 dx'} />
+<BlockMath>{`A =
+        \\begin{pmatrix}
+        1 & 0 & 0 \\\\
+        0 & 1 & 0 \\\\
+        0 & 0 & 1 \\\\
+        \\end{pmatrix}`}</BlockMath>
 
 ## The tools
 
