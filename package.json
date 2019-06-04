@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "navi-scripts serve",
-    "deploy": "gh-pages -d build",
+    "deploy": "netlify deploy --dir=build",
     "deploy:prod": "netlify deploy --dir=build --prod"
   },
   "eslintConfig": {
