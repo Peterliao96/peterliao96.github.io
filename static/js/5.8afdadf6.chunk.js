@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{89:function(t,e,n){"use strict";n.r(e),e.default={title:"My First Post!",spoiler:"Learn how to add new posts and tweak the theme to your liking.",getContent:function(){return Promise.all([n.e(0),n.e(8)]).then(n.bind(null,84))}}}}]);
-//# sourceMappingURL=5.8afdadf6.chunk.js.map
