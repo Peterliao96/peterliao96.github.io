@@ -2,15 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://peterliao96.github.io/archives/</loc>
-    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://peterliao96.github.io/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -19,11 +16,11 @@
                 />
   </url><url>
     <loc>https://peterliao96.github.io/categories/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/categories/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/categories/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -31,67 +28,51 @@
                 href="https://peterliao96.github.io/categories/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/tags/css/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <loc>https://peterliao96.github.io/tags/ingress/</loc>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/tags/css/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/ingress/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://peterliao96.github.io/tags/css/"
+                href="https://peterliao96.github.io/tags/ingress/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/tags/featured/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://peterliao96.github.io/tags/html/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <loc>https://peterliao96.github.io/tags/kubernetes/</loc>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/tags/html/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/kubernetes/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://peterliao96.github.io/tags/html/"
+                href="https://peterliao96.github.io/tags/kubernetes/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/tags/markdown/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <loc>https://peterliao96.github.io/categories/kubernetes/</loc>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/tags/markdown/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/categories/kubernetes/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://peterliao96.github.io/tags/markdown/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/post/markdown-syntax/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/post/markdown-syntax/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/post/markdown-syntax/"
+                href="https://peterliao96.github.io/categories/kubernetes/"
                 />
   </url><url>
     <loc>https://peterliao96.github.io/post/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/post/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -99,28 +80,15 @@
                 href="https://peterliao96.github.io/post/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/series/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/series/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/series/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/categories/syntax/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <loc>https://peterliao96.github.io/tags/service/</loc>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://peterliao96.github.io/tags/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/tags/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -128,21 +96,25 @@
                 href="https://peterliao96.github.io/tags/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/tags/themes/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://peterliao96.github.io/categories/themes/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://peterliao96.github.io/series/themes-guide/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://peterliao96.github.io/about/</loc>
-    <lastmod>2019-02-28T00:00:00+00:00</lastmod>
+    <loc>https://peterliao96.github.io/post/ingress/</loc>
+    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="pt"
-                href="https://peterliao96.github.io/pt/about/"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/ingress/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/ingress/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/about/</loc>
+    <lastmod>2020-10-24T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/about/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -150,6 +122,62 @@
                 href="https://peterliao96.github.io/about/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/tags/index/</loc>
+    <loc>https://peterliao96.github.io/tags/channel/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/golang/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/series/golang/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/categories/golang/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/post/golangpart5/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/goroutine/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/series/</loc>
+    <lastmod>2020-08-28T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/series/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/series/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/post/golangpart4/</loc>
+    <lastmod>2020-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/mutex/</loc>
+    <lastmod>2020-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/post/golangpart3/</loc>
+    <lastmod>2020-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/waitgroup/</loc>
+    <lastmod>2020-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/post/golangpart2/</loc>
+    <lastmod>2020-08-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/array/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/post/golangpart1/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/slice/</loc>
+    <lastmod>2020-08-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/archives/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
   </url>
 </urlset>

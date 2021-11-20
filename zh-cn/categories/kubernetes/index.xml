@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Hyper Container</title>
+    <link>https://peterliao96.github.io/zh-cn/categories/kubernetes/</link>
+    <description>Recent content in Kubernetes on Hyper Container</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
+    <lastBuildDate>Thu, 11 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于k8s的ingress的工作流程</title>
+      <link>https://peterliao96.github.io/zh-cn/post/ingress/</link>
+      <pubDate>Thu, 11 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/ingress/</guid>
+      <description>
+        
+          &lt;p&gt;文章讲解了关于ingress和ingress controller在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod。&lt;/p&gt;
+&lt;h2 id=&#34;ingress-工作流程&#34;&gt;Ingress 工作流程&lt;/h2&gt;
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>

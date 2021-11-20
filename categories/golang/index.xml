@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on Hyper Container</title>
+    <link>https://peterliao96.github.io/categories/golang/</link>
+    <description>Recent content in Golang on Hyper Container</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
+    <lastBuildDate>Fri, 28 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang Part 5: Channel</title>
+      <link>https://peterliao96.github.io/post/golangpart5/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart5/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the channel in Golang, how to use in Golang and what needs to be noticed when using channel in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang Part 4: Mutex and RWMutex</title>
+      <link>https://peterliao96.github.io/post/golangpart4/</link>
+      <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart4/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the Mutex and RWMutex in Golang, how to use in Golang and what needs to be noticed when using Mutex and RWMutex in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang Part 3: WaitGroup</title>
+      <link>https://peterliao96.github.io/post/golangpart3/</link>
+      <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart3/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the WaitGroup in Golang, how to use in Golang and what needs to be noticed when using WaitGroup in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang Part 2: Goroutine</title>
+      <link>https://peterliao96.github.io/post/golangpart2/</link>
+      <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart2/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the goroutine in Golang, how to use in Golang with several examples and what needs to be noticed when using goroutine in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang Part 1: Slice and Array</title>
+      <link>https://peterliao96.github.io/post/golangpart1/</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart1/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the slice and array in Golang, how to use in Golang and what needs to be noticed when using slice in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
