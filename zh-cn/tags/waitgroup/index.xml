@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>waitGroup on Hyper Container</title>
+    <link>https://peterliao96.github.io/zh-cn/tags/waitgroup/</link>
+    <description>Recent content in waitGroup on Hyper Container</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
+    <lastBuildDate>Fri, 14 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/waitgroup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 基础 Part 3: WaitGroup 等待组</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart3/</link>
+      <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart3/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 WaitGroup 在 Golang 中的基础知识、怎样使用 WaitGroup 以及使用 WaitGroup 需要注意的地方。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>

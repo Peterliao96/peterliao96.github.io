@@ -7,7 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
-    <lastBuildDate>Fri, 28 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang Part 6: Context</title>
+      <link>https://peterliao96.github.io/post/golangpart6/</link>
+      <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart6/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the context package in Golang, how to use it in Golang and what needs to be noticed when using the package context in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
     <item>
       <title>Golang Part 5: Channel</title>
       <link>https://peterliao96.github.io/post/golangpart5/</link>
@@ -16,7 +29,7 @@
       <guid>https://peterliao96.github.io/post/golangpart5/</guid>
       <description>
         
-          &lt;p&gt;The article discusses about the channel in Golang, how to use in Golang and what needs to be noticed when using channel in Golang.&lt;/p&gt;
+          &lt;p&gt;The article discusses about the channel in Golang, how to use it in Golang and what needs to be noticed when using channel in Golang.&lt;/p&gt;
         
       </description>
     </item>
@@ -29,7 +42,7 @@
       <guid>https://peterliao96.github.io/post/golangpart4/</guid>
       <description>
         
-          &lt;p&gt;The article discusses about the Mutex and RWMutex in Golang, how to use in Golang and what needs to be noticed when using Mutex and RWMutex in Golang.&lt;/p&gt;
+          &lt;p&gt;The article discusses about the Mutex and RWMutex in Golang, how to use them in Golang and what needs to be noticed when using Mutex and RWMutex in Golang.&lt;/p&gt;
         
       </description>
     </item>
@@ -42,7 +55,7 @@
       <guid>https://peterliao96.github.io/post/golangpart3/</guid>
       <description>
         
-          &lt;p&gt;The article discusses about the WaitGroup in Golang, how to use in Golang and what needs to be noticed when using WaitGroup in Golang.&lt;/p&gt;
+          &lt;p&gt;The article discusses about the WaitGroup in Golang, how to use it in Golang and what needs to be noticed when using WaitGroup in Golang.&lt;/p&gt;
         
       </description>
     </item>
@@ -55,7 +68,7 @@
       <guid>https://peterliao96.github.io/post/golangpart2/</guid>
       <description>
         
-          &lt;p&gt;The article discusses about the goroutine in Golang, how to use in Golang with several examples and what needs to be noticed when using goroutine in Golang.&lt;/p&gt;
+          &lt;p&gt;The article discusses about the goroutine in Golang, how to use it in Golang with several examples and what needs to be noticed when using goroutine in Golang.&lt;/p&gt;
         
       </description>
     </item>
@@ -68,7 +81,7 @@
       <guid>https://peterliao96.github.io/post/golangpart1/</guid>
       <description>
         
-          &lt;p&gt;The article discusses about the slice and array in Golang, how to use in Golang and what needs to be noticed when using slice in Golang.&lt;/p&gt;
+          &lt;p&gt;The article discusses about the slice and array in Golang, how to use them in Golang and what needs to be noticed when using slice in Golang.&lt;/p&gt;
         
       </description>
     </item>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on Hyper Container</title>
+    <link>https://peterliao96.github.io/zh-cn/categories/golang/</link>
+    <description>Recent content in Golang on Hyper Container</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
+    <lastBuildDate>Fri, 04 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 基础 Part 6: Context 包</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart6/</link>
+      <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart6/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 context 包在 Golang 中的基础知识、怎样使用 context 包以及使用 context 包的时候需要注意的地方。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 5: Channel</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart5/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart5/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 channel 在 Golang 中的基础知识、怎样使用 channel 以及使用 channel 的时候需要注意的地方。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 4: Mutex and RWMutex 互斥锁和读写锁</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart4/</link>
+      <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart4/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 Mutex 和 RWMutex 两种锁在 Golang 中的基础知识、怎样使用两种锁以及使用两种锁的时候需要注意的地方。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 3: WaitGroup 等待组</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart3/</link>
+      <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart3/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 WaitGroup 在 Golang 中的基础知识、怎样使用 WaitGroup 以及使用 WaitGroup 需要注意的地方。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 2: Goroutine</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart2/</link>
+      <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart2/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 goroutine 在 Golang 中的基础知识、怎样在 Golang 中用 goroutine 和一些例子，还讲解了 goroutine 在 Golang 中使用需要注意的地方。&lt;/p&gt;
+
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 1: 数组和切片</title>
+      <link>https://peterliao96.github.io/zh-cn/post/golangpart1/</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/golangpart1/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了关于数组和切片在Golang中的基础知识、怎样在Golang中应用他们以及使用切片需要注意的地方。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
