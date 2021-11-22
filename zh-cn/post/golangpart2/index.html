@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn" data-figures="" class="page">
   <head>
-<title>Golang 基础 Part 2: Goroutine | Hyper Container</title>
+<title>Golang 基础 Part 2: Goroutine 及其调度模型和协程池的应用 | Hyper Container</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,9 +23,9 @@
 <meta name="description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements.">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@1244240338Liao">
-<meta name="twitter:title" content="Golang 基础 Part 2: Goroutine" />
+<meta name="twitter:title" content="Golang 基础 Part 2: Goroutine 及其调度模型和协程池的应用" />
 <meta property="og:url" content="https://peterliao96.github.io/zh-cn/post/golangpart2/" />
-<meta property="og:title" content="Golang 基础 Part 2: Goroutine" />
+<meta property="og:title" content="Golang 基础 Part 2: Goroutine 及其调度模型和协程池的应用" />
 <meta property="og:description" content="Sample article showcasing basic Markdown syntax and formatting for HTML elements." />
 <meta property="og:image" content="https://peterliao96.github.io/images/golang1.jpeg" />
 
@@ -103,11 +103,6 @@
   <use xlink:href="#github"></use>
 </svg>
   </a>
-  <a href="https://twitter.com/#">
-    <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-  </a>
   <a href="https://www.linkedin.com/in/peter-junqi-liao-431193128/">
     <svg class="icon">
   <use xlink:href="#linkedin"></use>
@@ -116,7 +111,13 @@
     
   <a href="https://peterliao96.github.io/zh-cn/index.xml">
     <svg class="icon">
-  <use xlink:href="#rss"></use>
+  <use xlink:href="#facebook"></use>
+</svg>
+  </a>
+    
+  <a href="mailto:j29liao@uwaterloo.ca">
+    <svg class="icon">
+  <use xlink:href="#mail"></use>
 </svg>
   </a>
 <div class="color_mode">
@@ -133,7 +134,7 @@
   
 <div class="grid-inverse wrap content">
   <article class="post_content">
-    <h1 class="post_title">Golang 基础 Part 2: Goroutine</h1>
+    <h1 class="post_title">Golang 基础 Part 2: Goroutine 及其调度模型和协程池的应用</h1>
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
@@ -147,12 +148,12 @@
     <span class="page_only">&nbsp;·
   <div class="post_share">
     分享到:
-    <a href="https://twitter.com/intent/tweet?text=Golang%20%e5%9f%ba%e7%a1%80%20Part%202%3a%20Goroutine&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fgolangpart2%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
+    <a href="https://twitter.com/intent/tweet?text=Golang%20%e5%9f%ba%e7%a1%80%20Part%202%3a%20Goroutine%20%e5%8f%8a%e5%85%b6%e8%b0%83%e5%ba%a6%e6%a8%a1%e5%9e%8b%e5%92%8c%e5%8d%8f%e7%a8%8b%e6%b1%a0%e7%9a%84%e5%ba%94%e7%94%a8&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fgolangpart2%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#twitter"></use>
 </svg>
     </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fgolangpart2%2f&t=Golang%20%e5%9f%ba%e7%a1%80%20Part%202%3a%20Goroutine" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fgolangpart2%2f&t=Golang%20%e5%9f%ba%e7%a1%80%20Part%202%3a%20Goroutine%20%e5%8f%8a%e5%85%b6%e8%b0%83%e5%ba%a6%e6%a8%a1%e5%9e%8b%e5%92%8c%e5%8d%8f%e7%a8%8b%e6%b1%a0%e7%9a%84%e5%ba%94%e7%94%a8" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#facebook"></use>
 </svg>
@@ -172,8 +173,58 @@
   </div>
 
     
-    <p>文章讨论了 goroutine 在 Golang 中的基础知识、怎样在 Golang 中用 goroutine 和一些例子，还讲解了 goroutine 在 Golang 中使用需要注意的地方。</p>
-
+    <p>文章讨论了 goroutine 在 Golang 中的基础知识、怎样使用 goroutine 和一些例子、goroutine 的调度模型、goroutine 协程池的应用，和 goroutine 在 Golang 中使用需要注意的地方。</p>
+<h2 id="1-协程coroutine">1. 协程(coroutine)</h2>
+<p>在讲 goroutine 之前让我们先了解一下协程 (coroutine)，和线程类似，共享堆，不共享栈，协程的切换一般由程序员在代码中显式控制。它避免了上下文切换的额外耗费，兼顾了多线程的优点，简化了高并发程序的复杂。</p>
+<h2 id="2-golang-的协程goroutine">2. Golang 的协程(goroutine)</h2>
+<p>Goroutine 和其他语言的协程（coroutine）在使用方式上类似，但在区别上看，协程不是并发的，而Goroutine支持并发的。因此Goroutine可以理解为一种Go语言的协程。同时它可以运行在一个或多个线程上。来看个例子:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="kd">func</span> <span class="nf">Hello</span><span class="p">()</span>  <span class="p">{</span>
+<span class="ln">2</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hello everybody , I&#39;m Junqi Liao&#34;</span><span class="p">)</span>
+<span class="ln">3</span><span class="p">}</span>
+<span class="ln">4</span>
+<span class="ln">5</span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span>  <span class="p">{</span>
+<span class="ln">6</span> <span class="k">go</span> <span class="nf">Hello</span><span class="p">()</span>
+<span class="ln">7</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Golang梦工厂&#34;</span><span class="p">)</span>
+<span class="ln">8</span><span class="p">}</span>
+</code></pre></div><p>上面的程序，我们使用go又开启了一个 goroutine 执行 Hello 方法，但是我们运行这个程序，运行结果如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Golang梦工厂
+</code></pre></div><p>这里出现这个问题的原因是我们启动的 goroutine 在 main 执行完就退出了。解决办法可以用 channel 通信让 goroutine 告诉 main 我执行完了，您再打印 “Golang梦工厂”。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kd">func</span> <span class="nf">Hello</span><span class="p">(</span><span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>  <span class="p">{</span>
+<span class="ln"> 2</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hello everybody , I&#39;m asong&#34;</span><span class="p">)</span>
+<span class="ln"> 3</span> <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+<span class="ln"> 4</span><span class="p">}</span>
+<span class="ln"> 5</span>
+<span class="ln"> 6</span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span>  <span class="p">{</span>
+<span class="ln"> 7</span> <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+<span class="ln"> 8</span> <span class="k">go</span> <span class="nf">Hello</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
+<span class="ln"> 9</span> <span class="o">&lt;-</span><span class="nx">ch</span>
+<span class="ln">10</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Golang梦工厂&#34;</span><span class="p">)</span>
+<span class="ln">11</span><span class="p">}</span>
+</code></pre></div><h2 id="3-goroutine-的调度模型">3. Goroutine 的调度模型</h2>
+<ul>
+<li>M代表线程</li>
+<li>P代表处理器，每一个运行的M（线程）都必须绑定一个P（处理器）</li>
+<li>G代表 goroutine，每次使用 go 关键字的时候，都会创建一个G对象</li>
+</ul>
+<center><image src="/images/goroutine1.png"></image></center>
+<p>当前有两个P，各自绑定了一个M，每个P上挂了一个本地 goroutine 队列，也有一个全局 goroutine 队列。流程：</p>
+<ul>
+<li>每次使用 go 关键字声明时，一个G对象被创建并加入到本地G队列或者全局G队列。</li>
+<li>检查是否有空闲的P（处理器），若有那么创建一个M（若有正在 sleep 的M那么直接唤醒它）与其绑定，然后这个M循环执行 goroutine 任务。</li>
+<li>G任务执行的顺序是，先从本地队列中找。但若某个M（线程）发现本地队列为空，那么会从全局队列中截取 goroutine 来执行（一次性转移（全局队列的G个数/P个数））。如果全局队列也空，那么会随机从别的P那里截取 “一半” 的 goroutine 过来（偷窃任务），若所有的P的队列都为空，那么该M（线程）就会陷入 sleep。</li>
+</ul>
+<h2 id="4-goroutine-协程池">4. goroutine 协程池</h2>
+<p>超大规模并发的场景下，不加限制的大规模的 goroutine 可能造成内存暴涨，给机器带来极大的压力，吞吐量下降和处理速度变慢还是其次，更危险的是可能使得程序 crash。所以，goroutine 池化是有其现实意义的。</p>
+<p>首先，100w个任务，是不是真的需要100w个 goroutine 来处理？未必！用1w个 goroutine 也一样可以处理，让一个 goroutine 多处理几个任务就是了嘛，池化的核心优势就在于对 goroutine 的复用。此举首先极大减轻了 runtime 调度 goroutine 的压力，其次，便是降低了对内存的消耗。</p>
+<h3 id="41-设计思路">4.1 设计思路</h3>
+<p>Goroutine Pool 的实现思路大致如下：</p>
+<p>启动服务之时先初始化一个 Goroutine Pool 池，这个 Pool 维护了一个类似栈的LIFO队列 ，里面存放负责处理任务的 Worker，然后在 client 端提交 task 到 Pool 中之后，在 Pool 内部，接收 task 之后的核心操作是：</p>
+<ul>
+<li>检查当前 Worker 队列中是否有空闲的 Worker，如果有，取出执行当前的 task；</li>
+<li>没有空闲 Worker，判断当前在运行的 Worker 是否已超过该 Pool 的容量，是 — 阻塞等待直至有 Worker 被放回 Pool；否 — 新开一个 Worker（goroutine）处理；</li>
+<li>每个 Worker 执行完任务之后，放回 Pool 的队列中等待。</li>
+</ul>
+<p>按照这个设计思路，一个高性能的 Goroutine Pool，较好地解决了上述的大规模调度和资源占用的问题，在执行速度和内存占用方面相较于原生 goroutine 并发占有明显的优势，尤其是内存占用，因为复用，所以规避了无脑启动大规模 goroutine 的弊端，可以节省大量的内存。</p>
 
 <h3>翻译:</h3>
 <ul>
@@ -207,10 +258,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart6/" class="nav-link" title="Golang 基础 Part 6: Context 包">Golang 基础 Part 6: Context 包</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart5/" class="nav-link" title="Golang 基础 Part 5: Channel">Golang 基础 Part 5: Channel</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart7/" class="nav-link" title="Golang 基础 Part 7: Defer, Panic and Recover">Golang 基础 Part 7: Defer, Panic and Recover</a>
       </li>
     </ul>
     <div>
@@ -218,7 +269,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
@@ -234,7 +285,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/series/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         
@@ -245,7 +296,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
@@ -265,6 +316,11 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class="post_tag button button_translucent" title="ingress">
           INGRESS
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class="post_tag button button_translucent" title="interface">
+          INTERFACE
           <span class="button_tally">1</span>
         </a>
         

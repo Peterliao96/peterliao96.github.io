@@ -103,11 +103,6 @@
   <use xlink:href="#github"></use>
 </svg>
   </a>
-  <a href="https://twitter.com/#">
-    <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-  </a>
   <a href="https://www.linkedin.com/in/peter-junqi-liao-431193128/">
     <svg class="icon">
   <use xlink:href="#linkedin"></use>
@@ -116,7 +111,13 @@
     
   <a href="https://peterliao96.github.io/zh-cn/index.xml">
     <svg class="icon">
-  <use xlink:href="#rss"></use>
+  <use xlink:href="#facebook"></use>
+</svg>
+  </a>
+    
+  <a href="mailto:j29liao@uwaterloo.ca">
+    <svg class="icon">
+  <use xlink:href="#mail"></use>
 </svg>
   </a>
 <div class="color_mode">
@@ -174,6 +175,44 @@
 
     
     <p>文章讨论了关于数组和切片在Golang中的基础知识、怎样在Golang中应用他们以及使用切片需要注意的地方。</p>
+<h2 id="1-切片的本质">1. 切片的本质</h2>
+<p>切片的本质就是对底层数组的封装，它包含了三个信息</p>
+<ul>
+<li>底层数组的指针</li>
+<li>切片的长度(len)</li>
+<li>切片的容量(cap)</li>
+</ul>
+<p>举个例子，现在有一个数组 a := [8]int {0,1,2,3,4,5,6,7}，切片 s1 := a[:5]，相应示意图如下</p>
+<center><image src="/images/slice1.png"></image></center>
+<p>切片 s2 := a[3:6]，相应示意图如下：</p>
+<center><image src="/images/slice2.png"></image></center>
+<h2 id="2-切片的扩容">2. 切片的扩容</h2>
+<p>其中：</p>
+<ul>
+<li>T：切片的元素类型</li>
+<li>size：切片中元素的数量</li>
+<li>cap：切片的容量</li>
+</ul>
+<p>举例</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="c1">// make()函数创建切片
+</span><span class="ln">2</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">()</span>
+<span class="ln">3</span><span class="kd">var</span> <span class="nx">slices</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="ln">4</span><span class="c1">//[0 0 0 0]
+</span><span class="ln">5</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">slices</span><span class="p">)</span>
+<span class="ln">6</span><span class="c1">// 长度：4, 容量8
+</span><span class="ln">7</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;长度：%d, 容量%d&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">slices</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">slices</span><span class="p">))</span>
+</code></pre></div><p>需要注意的是，golang中没办法通过下标来给切片扩容，如果需要扩容，需要用到append</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="nx">slices2</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}</span>
+<span class="ln">2</span><span class="nx">slices2</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">slices2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="ln">3</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">slices2</span><span class="p">)</span>
+<span class="ln">4</span><span class="c1">// 输出结果 [1 2 3 4 5]
+</span></code></pre></div><p>同时切片还可以将两个切片进行合并</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="c1">// 合并切片
+</span><span class="ln">2</span><span class="c1"></span><span class="nx">slices3</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">}</span>
+<span class="ln">3</span><span class="nx">slices2</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">slices2</span><span class="p">,</span> <span class="nx">slices3</span><span class="o">...</span><span class="p">)</span>
+<span class="ln">4</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">slices2</span><span class="p">)</span>
+<span class="ln">5</span><span class="c1">// 输出结果  [1 2 3 4 5 6 7 8]
+</span></code></pre></div><p>需要注意的是，切片会有一个扩容操作，当元素存放不下的时候，会将原来的容量扩大两倍.</p>
 
 <h3>翻译:</h3>
 <ul>
@@ -207,10 +246,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart6/" class="nav-link" title="Golang 基础 Part 6: Context 包">Golang 基础 Part 6: Context 包</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart5/" class="nav-link" title="Golang 基础 Part 5: Channel">Golang 基础 Part 5: Channel</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart7/" class="nav-link" title="Golang 基础 Part 7: Defer, Panic and Recover">Golang 基础 Part 7: Defer, Panic and Recover</a>
       </li>
     </ul>
     <div>
@@ -218,7 +257,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
@@ -234,7 +273,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/series/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         
@@ -245,7 +284,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
@@ -265,6 +304,11 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class="post_tag button button_translucent" title="ingress">
           INGRESS
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class="post_tag button button_translucent" title="interface">
+          INTERFACE
           <span class="button_tally">1</span>
         </a>
         

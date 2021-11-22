@@ -7,7 +7,36 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
-    <lastBuildDate>Fri, 04 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 18 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang Part 8: Interface</title>
+      <link>https://peterliao96.github.io/post/golangpart8/</link>
+      <pubDate>Fri, 18 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart8/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the interface in Golang, how to use it in Golang and what needs to be noticed when using interface in Golang.&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang Part 7: Defer, Panic and Recover</title>
+      <link>https://peterliao96.github.io/post/golangpart7/</link>
+      <pubDate>Fri, 11 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/post/golangpart7/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the use of keywords defer, panic and recover in Golang, how to use them in Golang and what needs to be noticed when using slice in Golang.&lt;/p&gt;
+&lt;h2 id=&#34;1-defer&#34;&gt;1. defer&lt;/h2&gt;
+&lt;h2 id=&#34;2-panic&#34;&gt;2. panic&lt;/h2&gt;
+&lt;h2 id=&#34;3-recover&#34;&gt;3. recover&lt;/h2&gt;
+        
+      </description>
+    </item>
+    
     <item>
       <title>Golang Part 6: Context</title>
       <link>https://peterliao96.github.io/post/golangpart6/</link>

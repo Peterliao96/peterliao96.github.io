@@ -103,11 +103,6 @@
   <use xlink:href="#github"></use>
 </svg>
   </a>
-  <a href="https://twitter.com/#">
-    <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-  </a>
   <a href="https://www.linkedin.com/in/peter-junqi-liao-431193128/">
     <svg class="icon">
   <use xlink:href="#linkedin"></use>
@@ -116,7 +111,13 @@
     
   <a href="https://peterliao96.github.io/zh-cn/index.xml">
     <svg class="icon">
-  <use xlink:href="#rss"></use>
+  <use xlink:href="#facebook"></use>
+</svg>
+  </a>
+    
+  <a href="mailto:j29liao@uwaterloo.ca">
+    <svg class="icon">
+  <use xlink:href="#mail"></use>
 </svg>
   </a>
 <div class="color_mode">
@@ -140,7 +141,7 @@
 </svg></span>
     <span class="post_date">
       Aug 14, 2020</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
+    <span class="post_time"> · 2 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
         </a><a href='https://peterliao96.github.io/zh-cn/tags/goroutine' title="goroutine" class="post_tag button button_translucent">goroutine
         </a><a href='https://peterliao96.github.io/zh-cn/tags/waitgroup' title="waitGroup" class="post_tag button button_translucent">waitGroup
         </a>
@@ -174,6 +175,54 @@
 
     
     <p>文章讨论了 WaitGroup 在 Golang 中的基础知识、怎样使用 WaitGroup 以及使用 WaitGroup 需要注意的地方。</p>
+<p>很多情况下，我们正需要知道 goroutine 是否完成。这需要借助 sync 包的 WaitGroup 来实现。WatiGroup 是 sync 包中的一个 struct 类型，用来收集需要等待执行完成的 goroutine。下面是它的定义：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kd">type</span> <span class="nx">WaitGroup</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln"> 2</span>        <span class="c1">// Has unexported fields.
+</span><span class="ln"> 3</span><span class="c1"></span><span class="p">}</span>
+<span class="ln"> 4</span>  <span class="c1">// A WaitGroup waits for a collection of goroutines to finish. The main
+</span><span class="ln"> 5</span><span class="c1"></span>  <span class="c1">// goroutine calls Add to set the number of goroutines to wait for. Then each
+</span><span class="ln"> 6</span><span class="c1"></span>  <span class="c1">// of the goroutines runs and calls Done when finished. At the same time, Wait
+</span><span class="ln"> 7</span><span class="c1"></span>  <span class="c1">// can be used to block until all goroutines have finished.
+</span><span class="ln"> 8</span><span class="c1"></span>
+<span class="ln"> 9</span>  <span class="c1">// A WaitGroup must not be copied after first use.
+</span><span class="ln">10</span><span class="c1"></span>
+<span class="ln">11</span>
+<span class="ln">12</span><span class="kd">func</span> <span class="p">(</span><span class="nx">wg</span> <span class="o">*</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="nf">Add</span><span class="p">(</span><span class="nx">delta</span> <span class="kt">int</span><span class="p">)</span>
+<span class="ln">13</span><span class="kd">func</span> <span class="p">(</span><span class="nx">wg</span> <span class="o">*</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="nf">Done</span><span class="p">()</span>
+<span class="ln">14</span><span class="kd">func</span> <span class="p">(</span><span class="nx">wg</span> <span class="o">*</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="nf">Wait</span><span class="p">()</span>
+</code></pre></div><p>它有3个方法：</p>
+<ul>
+<li>Add()：每次激活想要被等待完成的 goroutine 之前，先调用Add()，用来设置或添加要等待完成的 goroutine 数量例如Add(2)或者两次调用Add(1)都会设置等待计数器的值为2，表示要等待2个 goroutine 完成</li>
+<li>Done()：每次需要等待的 goroutine 在真正完成之前，应该调用该方法来人为表示 goroutine 完成了，该方法会对等待计数器减1</li>
+<li>Wait()：在等待计数器减为0之前，Wait()会一直阻塞当前的 goroutine</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kn">package</span> <span class="nx">main</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span><span class="kn">import</span> <span class="p">(</span>  
+<span class="ln"> 4</span>    <span class="s">&#34;fmt&#34;</span>
+<span class="ln"> 5</span>    <span class="s">&#34;sync&#34;</span>
+<span class="ln"> 6</span>    <span class="s">&#34;time&#34;</span>
+<span class="ln"> 7</span><span class="p">)</span>
+<span class="ln"> 8</span>
+<span class="ln"> 9</span><span class="kd">func</span> <span class="nf">process</span><span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">wg</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="p">{</span>  
+<span class="ln">10</span>    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;started Goroutine &#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+<span class="ln">11</span>    <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="ln">12</span>    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Goroutine %d ended\n&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+<span class="ln">13</span>    <span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+<span class="ln">14</span><span class="p">}</span>
+<span class="ln">15</span>
+<span class="ln">16</span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>  
+<span class="ln">17</span>    <span class="nx">no</span> <span class="o">:=</span> <span class="mi">3</span>
+<span class="ln">18</span>    <span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="ln">19</span>    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">no</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+<span class="ln">20</span>        <span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="ln">21</span>        <span class="k">go</span> <span class="nf">process</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">wg</span><span class="p">)</span>
+<span class="ln">22</span>    <span class="p">}</span>
+<span class="ln">23</span>    <span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="ln">24</span>    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;All go routines finished executing&#34;</span><span class="p">)</span>
+<span class="ln">25</span><span class="p">}</span>
+</code></pre></div><p>上面激活了3个 goroutine，每次激活 goroutine 之前，都先调用 Add() 方法增加一个需要等待的 goroutine 计数。每个 goroutine 都运行 process() 函数，这个函数在执行完成时需要调用 Done() 方法来表示 goroutine 的结束。激活3个 goroutine 后，main goroutine 会执行到 Wait()，由于每个激活的 goroutine 运行的 process() 都需要睡眠2秒，所以 main goroutine 在 Wait() 这里会阻塞一段时间(大约2秒)，当所有 goroutine 都完成后，等待计数器减为0，Wait() 将不再阻塞，于是 main goroutine 得以执行后面的 Println()。</p>
+<p>还有一点需要特别注意的是 process() 中使用指针类型的 *sync.WaitGroup 作为参数，这里不能使用值类型的 sync.WaitGroup 作为参数，因为这意味着每个 goroutine 都拷贝一份 wg，每个 goroutine 都使用自己的 wg。这显然是不合理的，这3个 goroutine 应该共享一个 wg，才能知道这3个 goroutine 都完成了。实际上，如果使用值类型的参数，main goroutine 将会永久阻塞而导致产生死锁。</p>
 
 <h3>翻译:</h3>
 <ul>
@@ -207,10 +256,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart6/" class="nav-link" title="Golang 基础 Part 6: Context 包">Golang 基础 Part 6: Context 包</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart5/" class="nav-link" title="Golang 基础 Part 5: Channel">Golang 基础 Part 5: Channel</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart7/" class="nav-link" title="Golang 基础 Part 7: Defer, Panic and Recover">Golang 基础 Part 7: Defer, Panic and Recover</a>
       </li>
     </ul>
     <div>
@@ -218,7 +267,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
@@ -234,7 +283,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/series/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         
@@ -245,7 +294,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
@@ -265,6 +314,11 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class="post_tag button button_translucent" title="ingress">
           INGRESS
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class="post_tag button button_translucent" title="interface">
+          INTERFACE
           <span class="button_tally">1</span>
         </a>
         

@@ -103,11 +103,6 @@
   <use xlink:href="#github"></use>
 </svg>
   </a>
-  <a href="https://twitter.com/#">
-    <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-  </a>
   <a href="https://www.linkedin.com/in/peter-junqi-liao-431193128/">
     <svg class="icon">
   <use xlink:href="#linkedin"></use>
@@ -116,7 +111,13 @@
     
   <a href="https://peterliao96.github.io/zh-cn/index.xml">
     <svg class="icon">
-  <use xlink:href="#rss"></use>
+  <use xlink:href="#facebook"></use>
+</svg>
+  </a>
+    
+  <a href="mailto:j29liao@uwaterloo.ca">
+    <svg class="icon">
+  <use xlink:href="#mail"></use>
 </svg>
   </a>
 <div class="color_mode">
@@ -173,7 +174,38 @@
 
     
     <p>文章讨论了 context 包在 Golang 中的基础知识、怎样使用 context 包以及使用 context 包的时候需要注意的地方。</p>
-
+<h2 id="context-包">Context 包</h2>
+<p>Context 包主要用于父子任务之间的同步取消信号，本质上是一种协程调度的方式。可以通过简化对于处理单个请求的多个 Goroutine 之间与请求域的数据、超时和退出等操作。来看两个例子：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="c1">// 我们定义一个worker function
+</span><span class="ln"> 2</span><span class="c1"></span><span class="kd">func</span> <span class="nf">worker</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">wg</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+<span class="ln"> 3</span>  <span class="k">defer</span> <span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+<span class="ln"> 4</span>
+<span class="ln"> 5</span>  <span class="k">for</span> <span class="p">{</span>
+<span class="ln"> 6</span>    <span class="k">select</span> <span class="p">{</span>
+<span class="ln"> 7</span>    <span class="k">case</span> <span class="o">&lt;-</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
+<span class="ln"> 8</span>      <span class="k">return</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Err</span><span class="p">()</span>
+<span class="ln"> 9</span>    <span class="k">default</span><span class="p">:</span>
+<span class="ln">10</span>      <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">)</span>
+<span class="ln">11</span>    <span class="p">}</span>
+<span class="ln">12</span>  <span class="p">}</span>
+<span class="ln">13</span><span class="p">}</span>
+<span class="ln">14</span>
+<span class="ln">15</span><span class="kd">func</span> <span class="nf">main</span><span class="p">(){</span>
+<span class="ln">16</span>  <span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="ln">17</span>
+<span class="ln">18</span>  <span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="ln">19</span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+<span class="ln">20</span>    <span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="ln">21</span>    <span class="k">go</span> <span class="nf">worker</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">wg</span><span class="p">)</span>
+<span class="ln">22</span>  <span class="p">}</span>
+<span class="ln">23</span>  <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="ln">24</span>  <span class="nf">cancel</span><span class="p">()</span>
+<span class="ln">25</span>
+<span class="ln">26</span>  <span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="ln">27</span><span class="p">}</span>
+<span class="ln">28</span>
+</code></pre></div><p>当并发体超时或者 main 主动停止 worker goroutine 时，worker goroutine 都可以安全退出。</p>
+<p>另外在使用 context 时有两点值得注意：上游任务仅仅使用 context 通知下游任务不再需要，但不会直接干涉和中断下游任务的执行，由下游任务自行决定后续的处理操作，也就是说 context 的取消操作是无侵入的；context 是线程安全的，因为 context 本身是不可变的（immutable），因此可以放心地在多个协程中传递使用。</p>
 
 <h3>翻译:</h3>
 <ul>
@@ -207,10 +239,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart5/" class="nav-link" title="Golang 基础 Part 5: Channel">Golang 基础 Part 5: Channel</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart4/" class="nav-link" title="Golang 基础 Part 4: Mutex and RWMutex 互斥锁和读写锁">Golang 基础 Part 4: Mutex and RWMutex 互斥锁和读写锁</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart7/" class="nav-link" title="Golang 基础 Part 7: Defer, Panic and Recover">Golang 基础 Part 7: Defer, Panic and Recover</a>
       </li>
     </ul>
     <div>
@@ -218,7 +250,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
@@ -234,7 +266,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/series/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         
@@ -245,7 +277,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
@@ -265,6 +297,11 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class="post_tag button button_translucent" title="ingress">
           INGRESS
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class="post_tag button button_translucent" title="interface">
+          INTERFACE
           <span class="button_tally">1</span>
         </a>
         

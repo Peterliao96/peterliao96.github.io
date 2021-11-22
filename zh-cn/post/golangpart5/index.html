@@ -103,11 +103,6 @@
   <use xlink:href="#github"></use>
 </svg>
   </a>
-  <a href="https://twitter.com/#">
-    <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-  </a>
   <a href="https://www.linkedin.com/in/peter-junqi-liao-431193128/">
     <svg class="icon">
   <use xlink:href="#linkedin"></use>
@@ -116,7 +111,13 @@
     
   <a href="https://peterliao96.github.io/zh-cn/index.xml">
     <svg class="icon">
-  <use xlink:href="#rss"></use>
+  <use xlink:href="#facebook"></use>
+</svg>
+  </a>
+    
+  <a href="mailto:j29liao@uwaterloo.ca">
+    <svg class="icon">
+  <use xlink:href="#mail"></use>
 </svg>
   </a>
 <div class="color_mode">
@@ -173,7 +174,46 @@
   </div>
 
     
-    <p>文章讨论了 channel 在 Golang 中的基础知识、怎样使用 channel 以及使用 channel 的时候需要注意的地方。</p>
+    <p>文章讨论了 channel 在 Golang 中的基础知识、怎样使用 channel、channel的底层实现，以及使用 channel 的时候需要注意的地方。</p>
+<p>Channel 主要采用 CSP 并发模型实现的原理：不要通过共享内存来通信，而要通过通信来实现内存共享。它分为两种：带缓冲、不带缓冲。对不带缓冲的 channel 进行的操作实际上可以看作 “同步模式”，带缓冲的则称为 “异步模式”。</p>
+<h2 id="1-非缓冲的-channel">1. 非缓冲的 channel</h2>
+<p>无缓冲的通道只有当发送方和接收方都准备好时才会传送数据, 否则准备好的一方将会被阻塞。</p>
+<h2 id="2-带缓冲的-channel">2. 带缓冲的 channel</h2>
+<p>有缓冲的channel区别在于只有当缓冲区被填满时, 才会阻塞发送者, 只有当缓冲区为空时才会阻塞接受者。值得注意的是，</p>
+<ul>
+<li>关闭channel以后仍然可以读取数据</li>
+<li>for range 循环可以持续从一个channel中接收数据</li>
+</ul>
+<h2 id="3-channel-的底层实现">3. channel 的底层实现</h2>
+<center><image src="/images/channel1.png"></image></center>
+<ul>
+<li>buf 是有缓冲的 channel 所特有的结构，用来存储缓存数据。是个循环链表</li>
+<li>sendx 和 recvx 用于记录 buf 这个循环链表中的~发送或者接收的~index</li>
+<li>lock是个互斥锁。</li>
+<li>recvq 和 sendq 分别是接收 (&lt;-channel) 或者发送 (channel &lt;- xxx) 的 goroutine 抽象出来的结构体 (sudog) 的队列。是个双向链表</li>
+</ul>
+<p>channel 的实现借助于结构体 hchan, 如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kd">type</span> <span class="nx">hchan</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln"> 2</span>    <span class="nx">qcount</span>   <span class="kt">uint</span>           <span class="c1">// total data in the queue
+</span><span class="ln"> 3</span><span class="c1"></span>    <span class="nx">dataqsiz</span> <span class="kt">uint</span>           <span class="c1">// size of the circular queue
+</span><span class="ln"> 4</span><span class="c1"></span>    <span class="nx">buf</span>      <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// points to an array of dataqsiz elements
+</span><span class="ln"> 5</span><span class="c1"></span>    <span class="nx">elemsize</span> <span class="kt">uint16</span>
+<span class="ln"> 6</span>    <span class="nx">closed</span>   <span class="kt">uint32</span>
+<span class="ln"> 7</span>    <span class="nx">elemtype</span> <span class="o">*</span><span class="nx">_type</span> <span class="c1">// element type
+</span><span class="ln"> 8</span><span class="c1"></span>    <span class="nx">sendx</span>    <span class="kt">uint</span>   <span class="c1">// send index
+</span><span class="ln"> 9</span><span class="c1"></span>    <span class="nx">recvx</span>    <span class="kt">uint</span>   <span class="c1">// receive index
+</span><span class="ln">10</span><span class="c1"></span>    <span class="nx">recvq</span>    <span class="nx">waitq</span>  <span class="c1">// list of recv waiters
+</span><span class="ln">11</span><span class="c1"></span>    <span class="nx">sendq</span>    <span class="nx">waitq</span>  <span class="c1">// list of send waiters
+</span><span class="ln">12</span><span class="c1"></span>
+<span class="ln">13</span>    <span class="c1">// lock protects all fields in hchan, as well as several
+</span><span class="ln">14</span><span class="c1"></span>    <span class="c1">// fields in sudogs blocked on this channel.
+</span><span class="ln">15</span><span class="c1"></span>    <span class="c1">//
+</span><span class="ln">16</span><span class="c1"></span>    <span class="c1">// Do not change another G&#39;s status while holding this lock
+</span><span class="ln">17</span><span class="c1"></span>    <span class="c1">// (in particular, do not ready a G), as this can deadlock
+</span><span class="ln">18</span><span class="c1"></span>    <span class="c1">// with stack shrinking.
+</span><span class="ln">19</span><span class="c1"></span>    <span class="nx">lock</span> <span class="nx">mutex</span>
+<span class="ln">20</span><span class="p">}</span>
+</code></pre></div>
 
 <h3>翻译:</h3>
 <ul>
@@ -207,10 +247,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart6/" class="nav-link" title="Golang 基础 Part 6: Context 包">Golang 基础 Part 6: Context 包</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golangpart4/" class="nav-link" title="Golang 基础 Part 4: Mutex and RWMutex 互斥锁和读写锁">Golang 基础 Part 4: Mutex and RWMutex 互斥锁和读写锁</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golangpart7/" class="nav-link" title="Golang 基础 Part 7: Defer, Panic and Recover">Golang 基础 Part 7: Defer, Panic and Recover</a>
       </li>
     </ul>
     <div>
@@ -218,7 +258,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
@@ -234,7 +274,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/series/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         
@@ -245,7 +285,7 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">6</span>
+          <span class="button_tally">8</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
@@ -265,6 +305,11 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class="post_tag button button_translucent" title="ingress">
           INGRESS
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class="post_tag button button_translucent" title="interface">
+          INTERFACE
           <span class="button_tally">1</span>
         </a>
         

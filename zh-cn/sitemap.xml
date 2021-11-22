@@ -122,6 +122,97 @@
                 href="https://peterliao96.github.io/zh-cn/about/"
                 />
   </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/tags/golang/</loc>
+    <lastmod>2020-09-18T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/tags/golang/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/golang/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/series/golang/</loc>
+    <lastmod>2020-09-18T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/series/golang/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/series/golang/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/categories/golang/</loc>
+    <lastmod>2020-09-18T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/categories/golang/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/categories/golang/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/post/golangpart8/</loc>
+    <lastmod>2020-09-18T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/golangpart8/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/golangpart8/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/tags/interface/</loc>
+    <lastmod>2020-09-18T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/tags/interface/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/interface/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/series/</loc>
+    <lastmod>2020-09-18T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/series/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/series/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/post/golangpart7/</loc>
+    <lastmod>2020-09-11T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/golangpart7/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/golangpart7/"
+                />
+  </url><url>
     <loc>https://peterliao96.github.io/zh-cn/tags/context/</loc>
     <lastmod>2020-09-04T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -135,45 +226,6 @@
                 href="https://peterliao96.github.io/zh-cn/tags/context/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/tags/golang/</loc>
-    <lastmod>2020-09-04T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/tags/golang/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/tags/golang/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/series/golang/</loc>
-    <lastmod>2020-09-04T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/series/golang/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/series/golang/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/categories/golang/</loc>
-    <lastmod>2020-09-04T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/categories/golang/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/categories/golang/"
-                />
-  </url><url>
     <loc>https://peterliao96.github.io/zh-cn/post/golangpart6/</loc>
     <lastmod>2020-09-04T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -185,19 +237,6 @@
                 rel="alternate"
                 hreflang="zh-cn"
                 href="https://peterliao96.github.io/zh-cn/post/golangpart6/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/series/</loc>
-    <lastmod>2020-09-04T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/series/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/series/"
                 />
   </url><url>
     <loc>https://peterliao96.github.io/zh-cn/tags/channel/</loc>
