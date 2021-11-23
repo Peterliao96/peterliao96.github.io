@@ -16,7 +16,7 @@
       <guid>https://peterliao96.github.io/zh-cn/post/golangpart1/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了关于数组和切片在Golang中的基础知识、怎样在Golang中应用他们以及使用切片需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了关于数组和切片在Golang中的基础知识(切片的本质、扩容以及值传递问题)、怎样在Golang中应用他们以及使用切片需要注意的地方。&lt;/p&gt;
 &lt;h2 id=&#34;1-切片的本质&#34;&gt;1. 切片的本质&lt;/h2&gt;
 &lt;p&gt;切片的本质就是对底层数组的封装，它包含了三个信息&lt;/p&gt;
 &lt;ul&gt;
@@ -25,9 +25,9 @@
 &lt;li&gt;切片的容量(cap)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;举个例子，现在有一个数组 a := [8]int {0,1,2,3,4,5,6,7}，切片 s1 := a[:5]，相应示意图如下&lt;/p&gt;
-&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/slice1.png&#34;&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/slice1.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;p&gt;切片 s2 := a[3:6]，相应示意图如下：&lt;/p&gt;
-&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/slice2.png&#34;&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/slice2.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;h2 id=&#34;2-切片的扩容&#34;&gt;2. 切片的扩容&lt;/h2&gt;
 &lt;p&gt;其中：&lt;/p&gt;
 &lt;ul&gt;
@@ -54,7 +54,9 @@
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;slices2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;slices2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;slices3&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;slices2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 输出结果  [1 2 3 4 5 6 7 8]
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要注意的是，切片会有一个扩容操作，当元素存放不下的时候，会将原来的容量扩大两倍.&lt;/p&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要注意的是，切片会有一个扩容操作，当元素存放不下的时候，会将原来的容量扩大两倍。&lt;/p&gt;
+&lt;h2 id=&#34;3-切片的传递问题&#34;&gt;3. 切片的传递问题&lt;/h2&gt;
+&lt;p&gt;切片本身传递给函数形参时是引用传递，但 append 后，切片长度变化时会被重新分配内存，而原来的切片还是指向原来地址，致使与初始状况传进来的地址不一样，要想对其值有改变操作，需使用指针类型操作。&lt;/p&gt;
         
       </description>
     </item>

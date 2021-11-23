@@ -51,7 +51,7 @@
   
     
   
-  <body data-code="7" data-lines="false" id="documentTop">
+  <body data-code="30" data-lines="false" id="documentTop">
 
 <header class="nav_header" >
   <nav class="nav"><a href='https://peterliao96.github.io/zh-cn/' class="nav_brand nav_item" title="Hyper Container">
@@ -141,7 +141,7 @@
 </svg></span>
     <span class="post_date">
       Aug 28, 2020</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
+    <span class="post_time"> · 2 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
         </a><a href='https://peterliao96.github.io/zh-cn/tags/goroutine' title="goroutine" class="post_tag button button_translucent">goroutine
         </a><a href='https://peterliao96.github.io/zh-cn/tags/channel' title="channel" class="post_tag button button_translucent">channel
         </a>
@@ -185,7 +185,8 @@
 <li>for range 循环可以持续从一个channel中接收数据</li>
 </ul>
 <h2 id="3-channel-的底层实现">3. channel 的底层实现</h2>
-<center><image src="/images/channel1.png"></image></center>
+<h3 id="31-channel-底层结构体">3.1 channel 底层结构体</h3>
+<center><image src="/images/channel1.png" width=800px height=480px></image></center>
 <ul>
 <li>buf 是有缓冲的 channel 所特有的结构，用来存储缓存数据。是个循环链表</li>
 <li>sendx 和 recvx 用于记录 buf 这个循环链表中的~发送或者接收的~index</li>
@@ -213,7 +214,31 @@
 </span><span class="ln">18</span><span class="c1"></span>    <span class="c1">// with stack shrinking.
 </span><span class="ln">19</span><span class="c1"></span>    <span class="nx">lock</span> <span class="nx">mutex</span>
 <span class="ln">20</span><span class="p">}</span>
-</code></pre></div>
+</code></pre></div><h3 id="32-sendrecv-的细化操作">3.2 send/recv 的细化操作</h3>
+<p>缓存链表中以上每一步的操作，都是需要加锁操作的！</p>
+<p>每一步的操作的细节可以细化为：</p>
+<ul>
+<li>第一，加锁</li>
+<li>第二，把数据从 goroutine 中 copy 到“队列”中(或者从队列中 copy 到 goroutine 中）。</li>
+<li>第三，释放锁</li>
+</ul>
+<p>goroutine 内存 copy 到 channel:</p>
+<center><image src="/images/channel2.png" width=800px height=480px></image></center>
+<p>channel 中的内存 copy 到 goroutine:</p>
+<center><image src="/images/channel3.png" width=800px height=480px></image></center>
+<h3 id="33-goroutine-的阻塞操作">3.3. goroutine 的阻塞操作</h3>
+<p>goroutine 的阻塞操作，实际上是调用 send (ch &lt;- xx) 或者 recv ( &lt;-ch) 的时候主动触发的，</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="c1">//goroutine1 中，记做G1
+</span><span class="ln">2</span><span class="c1"></span>
+<span class="ln">3</span><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="ln">4</span>
+<span class="ln">5</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+<span class="ln">6</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+<span class="ln">7</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+</code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (ch&lt;-1) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
+<center><image src="/images/channel4.png" width=800px height=480px></image></center>
+<p>同时G1也会被抽象成含有G1指针和 send 元素的 sudog 结构体保存到 hchan 的 sendq 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，channel 会将等待队列中的G1推出，将G1当时 send 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。</p>
+<center><image src="/images/channel5.png" width=300px height=300px></image></center>
 
 <h3>翻译:</h3>
 <ul>
@@ -228,11 +253,11 @@
 <aside class="sidebar">
   <section class="sidebar_inner">
         <div class="author_header">
-          <img src="https://peterliao96.github.io/images/selfie-modified.png" alt="Junqi Liao (廖隽祺) photo">
-          <h2>Junqi Liao (廖隽祺)</h2>
+          <img src="https://peterliao96.github.io/images/selfie-modified.png" alt="廖隽祺 photo">
+          <h2>廖隽祺</h2>
         </div>
       <div class="author_bio">
-        Golang developer, cloud native enthusiasts, continual incremental improvement.
+        Golang 开发，云原生兴趣爱好者，对技术充满着执着与热爱，持续创新与提升。
       </div>
       <a href='https://peterliao96.github.io/zh-cn/about/' class="button mt-1" role="button" title='阅读更多'>阅读更多</a>
     <h2 class="mt-4">精选文章</h2>

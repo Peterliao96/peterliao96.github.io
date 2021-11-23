@@ -51,7 +51,7 @@
   
     
   
-  <body data-code="7" data-lines="false" id="documentTop">
+  <body data-code="30" data-lines="false" id="documentTop">
 
 <header class="nav_header" >
   <nav class="nav"><a href='https://peterliao96.github.io/zh-cn/' class="nav_brand nav_item" title="Hyper Container">
@@ -141,7 +141,7 @@
 </svg></span>
     <span class="post_date">
       Sep 11, 2020</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
+    <span class="post_time"> · 2 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
         </a>
     </span>
     <span class="page_only">&nbsp;·
@@ -183,7 +183,7 @@
 <span class="ln">4</span>    <span class="nx">i</span><span class="o">++</span>
 <span class="ln">5</span>    <span class="k">return</span>
 <span class="ln">6</span><span class="p">}</span>
-</code></pre></div><p>defer 语句中的fmt.Println()参数i值在defer出现时就已经确定下来，实际上是拷贝了一份。后面对变量i的修改不会影响fmt.Println()函数的执行，仍然打印&quot;0&quot;。</p>
+</code></pre></div><p>defer 语句中的 fmt.Println() 参数i值在 defer 出现时就已经确定下来，实际上是拷贝了一份。后面对变量i的修改不会影响 fmt.Println() 函数的执行，仍然打印&quot;0&quot;。</p>
 <ul>
 <li>规则二：延迟函数执行按后进先出顺序执行，即先出现的 defer 最后执行。</li>
 </ul>
@@ -226,7 +226,81 @@
 <li>主动：程序猿主动调用 panic( ) 函数；</li>
 <li>被动：编译器的隐藏代码触发，或者内核发送给进程信号触发；</li>
 </ul>
+<p>panic 的具体实现，是依靠 defer 指针处理的，我们先来看一看 panic 的结构体：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="c1">//runtime/runtime2.go
+</span><span class="ln">2</span><span class="c1"></span><span class="kd">type</span> <span class="nx">_panic</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln">3</span>    <span class="nx">argp</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// pointer to arguments of deferred call run during panic; cannot move - known to liblink
+</span><span class="ln">4</span><span class="c1"></span>    <span class="nx">arg</span> <span class="kd">interface</span><span class="p">{}</span> <span class="c1">// argument to panic
+</span><span class="ln">5</span><span class="c1"></span>    <span class="nx">link</span> <span class="o">*</span><span class="nx">_panic</span> <span class="c1">// link to earlier panic
+</span><span class="ln">6</span><span class="c1"></span>    <span class="nx">recovered</span> <span class="kt">bool</span> <span class="c1">// whether this panic is over
+</span><span class="ln">7</span><span class="c1"></span>    <span class="nx">aborted</span> <span class="kt">bool</span> <span class="c1">// the panic was aborted
+</span><span class="ln">8</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>_panic 是个结构体，存储了 defer 指针、参数，panic 列表的表头指针，和已恢复或已终止的信息。以下是 panic 的处理流程：</p>
+<ul>
+<li>
+<ol>
+<li>每个 goroutine 都有一个 panic 链表，运行时，遇到 panic 代码，会生成对应的 _panic 数据，存到这个链表的表头。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>每执行完毕一个函数，如果没有 panic 发生，就跳过对应的 _panic 数据，回到正常流程，否则进入3。</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>如果有 panic 发生，处理链表中对应的 _panic，进入4。</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>如果 defer 链表（跟 panic 链表一样，也是每个 goroutine 一个）里存在 defer，按约定顺序执行延迟代码，进入5，否则进入8。</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>当 defer 链表执行到需要 recover 的时候，就交给 reflectcall 去调用 gorecover，进入6，否则进入7。</li>
+</ol>
+</li>
+<li>
+<ol start="6">
+<li>执行 recover，这时对应的 _panic 结构里的 recovered 字段标记为真，由 recovery 方法，负责安抚当前的 _panic，回到正常流程。</li>
+</ol>
+</li>
+<li>
+<ol start="7">
+<li>如果没 recover，那就进入死给你看流程，进入8。</li>
+</ol>
+</li>
+<li>
+<ol start="8">
+<li>最后，执行 fatalpanic 方法。</li>
+</ol>
+</li>
+</ul>
+<p>注意：因为 golang 的 gorotuine 机制，panic 在不同的 gorotuine 里面，是单独的，并不是整体处理。可能一个地方凉了，就会整体完蛋，这个要非常小心。</p>
 <h2 id="3-recover">3. recover</h2>
+<p>Golang 虽然没有 try catch 机制，但它有类似 recover 的机制，</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kn">package</span> <span class="nx">main</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+<span class="ln"> 4</span>
+<span class="ln"> 5</span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="ln"> 6</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d\n&#34;</span><span class="p">,</span> <span class="nf">cal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="ln"> 7</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d\n&#34;</span><span class="p">,</span> <span class="nf">cal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="ln"> 8</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d\n&#34;</span><span class="p">,</span> <span class="nf">cal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="ln"> 9</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d\n&#34;</span><span class="p">,</span> <span class="nf">cal</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="ln">10</span><span class="p">}</span>
+<span class="ln">11</span>
+<span class="ln">12</span><span class="kd">func</span> <span class="nf">cal</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+<span class="ln">13</span>	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+<span class="ln">14</span>		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nb">recover</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="ln">15</span>			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%s\n&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+<span class="ln">16</span>		<span class="p">}</span>
+<span class="ln">17</span>	<span class="p">}()</span>
+<span class="ln">18</span>	<span class="k">return</span> <span class="nx">a</span> <span class="o">/</span> <span class="nx">b</span>
+<span class="ln">19</span><span class="p">}</span>
+</code></pre></div><p>在cal函数里面每次终止的时候都会检查有没有异常产生，如果产生了我们可以处理，比如说记录日志，这样程序还可以继续执行下去。</p>
 
 <h3>翻译:</h3>
 <ul>
@@ -241,11 +315,11 @@
 <aside class="sidebar">
   <section class="sidebar_inner">
         <div class="author_header">
-          <img src="https://peterliao96.github.io/images/selfie-modified.png" alt="Junqi Liao (廖隽祺) photo">
-          <h2>Junqi Liao (廖隽祺)</h2>
+          <img src="https://peterliao96.github.io/images/selfie-modified.png" alt="廖隽祺 photo">
+          <h2>廖隽祺</h2>
         </div>
       <div class="author_bio">
-        Golang developer, cloud native enthusiasts, continual incremental improvement.
+        Golang 开发，云原生兴趣爱好者，对技术充满着执着与热爱，持续创新与提升。
       </div>
       <a href='https://peterliao96.github.io/zh-cn/about/' class="button mt-1" role="button" title='阅读更多'>阅读更多</a>
     <h2 class="mt-4">精选文章</h2>
