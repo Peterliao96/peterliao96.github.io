@@ -190,7 +190,7 @@
 <li>buf 是有缓冲的 channel 所特有的结构，用来存储缓存数据。是个循环链表</li>
 <li>sendx 和 recvx 用于记录 buf 这个循环链表中的~发送或者接收的~index</li>
 <li>lock是个互斥锁。</li>
-<li>recvq 和 sendq 分别是接收 (&lt;-channel) 或者发送 (channel &lt;- xxx) 的 goroutine 抽象出来的结构体 (sudog) 的队列。是个双向链表</li>
+<li>recvq 和 sendq 分别是接收 (<code>&lt;-channel</code>) 或者发送 (<code>channel &lt;- xxx</code>) 的 goroutine 抽象出来的结构体 (sudog) 的队列。是个双向链表</li>
 </ul>
 <p>channel 的实现借助于结构体 hchan, 如下：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kd">type</span> <span class="nx">hchan</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -226,7 +226,7 @@
 <p>channel 中的内存 copy 到 goroutine:</p>
 <center><image src="/images/channel3.png" width=800px height=480px></image></center>
 <h3 id="33-goroutine-的阻塞操作">3.3. goroutine 的阻塞操作</h3>
-<p>goroutine 的阻塞操作，实际上是调用 send (ch &lt;- xx) 或者 recv ( &lt;-ch) 的时候主动触发的，</p>
+<p>goroutine 的阻塞操作，实际上是调用 send (<code>ch &lt;- xx</code>) 或者 recv ( <code>&lt;-ch</code>) 的时候主动触发的，</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="c1">//goroutine1 中，记做G1
 </span><span class="ln">2</span><span class="c1"></span>
 <span class="ln">3</span><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -234,7 +234,7 @@
 <span class="ln">5</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 <span class="ln">6</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 <span class="ln">7</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-</code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (ch&lt;-1) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
+</code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (<code>ch&lt;-1</code>) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
 <center><image src="/images/channel4.png" width=800px height=480px></image></center>
 <p>同时G1也会被抽象成含有G1指针和 send 元素的 sudog 结构体保存到 hchan 的 sendq 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，channel 会将等待队列中的G1推出，将G1当时 send 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。</p>
 <center><image src="/images/channel5.png" width=300px height=300px></image></center>

@@ -33,7 +33,7 @@
 &lt;li&gt;buf 是有缓冲的 channel 所特有的结构，用来存储缓存数据。是个循环链表&lt;/li&gt;
 &lt;li&gt;sendx 和 recvx 用于记录 buf 这个循环链表中的~发送或者接收的~index&lt;/li&gt;
 &lt;li&gt;lock是个互斥锁。&lt;/li&gt;
-&lt;li&gt;recvq 和 sendq 分别是接收 (&amp;lt;-channel) 或者发送 (channel &amp;lt;- xxx) 的 goroutine 抽象出来的结构体 (sudog) 的队列。是个双向链表&lt;/li&gt;
+&lt;li&gt;recvq 和 sendq 分别是接收 (&lt;code&gt;&amp;lt;-channel&lt;/code&gt;) 或者发送 (&lt;code&gt;channel &amp;lt;- xxx&lt;/code&gt;) 的 goroutine 抽象出来的结构体 (sudog) 的队列。是个双向链表&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;channel 的实现借助于结构体 hchan, 如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;hchan&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
@@ -69,7 +69,7 @@
 &lt;p&gt;channel 中的内存 copy 到 goroutine:&lt;/p&gt;
 &lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel3.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;h3 id=&#34;33-goroutine-的阻塞操作&#34;&gt;3.3. goroutine 的阻塞操作&lt;/h3&gt;
-&lt;p&gt;goroutine 的阻塞操作，实际上是调用 send (ch &amp;lt;- xx) 或者 recv ( &amp;lt;-ch) 的时候主动触发的，&lt;/p&gt;
+&lt;p&gt;goroutine 的阻塞操作，实际上是调用 send (&lt;code&gt;ch &amp;lt;- xx&lt;/code&gt;) 或者 recv ( &lt;code&gt;&amp;lt;-ch&lt;/code&gt;) 的时候主动触发的，&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//goroutine1 中，记做G1
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
@@ -77,7 +77,7 @@
 &lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当 channel 缓存满了以后，再次进行 send 操作 (ch&amp;lt;-1) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当 channel 缓存满了以后，再次进行 send 操作 (&lt;code&gt;ch&amp;lt;-1&lt;/code&gt;) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，&lt;/p&gt;
 &lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel4.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;p&gt;同时G1也会被抽象成含有G1指针和 send 元素的 sudog 结构体保存到 hchan 的 sendq 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，channel 会将等待队列中的G1推出，将G1当时 send 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。&lt;/p&gt;
 &lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel5.png&#34; width=300px height=300px&gt;&lt;/image&gt;&lt;/center&gt;

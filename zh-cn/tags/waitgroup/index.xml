@@ -17,7 +17,7 @@
       <description>
         
           &lt;p&gt;文章讨论了 WaitGroup 在 Golang 中的基础知识、怎样使用 WaitGroup 以及使用 WaitGroup 需要注意的地方。&lt;/p&gt;
-&lt;p&gt;很多情况下，我们正需要知道 goroutine 是否完成。这需要借助 sync 包的 WaitGroup 来实现。WatiGroup 是 sync 包中的一个 struct 类型，用来收集需要等待执行完成的 goroutine。下面是它的定义：&lt;/p&gt;
+&lt;p&gt;很多情况下，我们正需要知道 goroutine 是否完成。这需要借助 &lt;code&gt;sync&lt;/code&gt; 包的 WaitGroup 来实现。WatiGroup 是 &lt;code&gt;sync&lt;/code&gt; 包中的一个 &lt;code&gt;struct&lt;/code&gt; 类型，用来收集需要等待执行完成的 goroutine。下面是它的定义：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// Has unexported fields.
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
@@ -34,9 +34,9 @@
 &lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;它有3个方法：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Add()：每次激活想要被等待完成的 goroutine 之前，先调用Add()，用来设置或添加要等待完成的 goroutine 数量例如Add(2)或者两次调用Add(1)都会设置等待计数器的值为2，表示要等待2个 goroutine 完成&lt;/li&gt;
-&lt;li&gt;Done()：每次需要等待的 goroutine 在真正完成之前，应该调用该方法来人为表示 goroutine 完成了，该方法会对等待计数器减1&lt;/li&gt;
-&lt;li&gt;Wait()：在等待计数器减为0之前，Wait()会一直阻塞当前的 goroutine&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Add()&lt;/code&gt;：每次激活想要被等待完成的 goroutine 之前，先调用 &lt;code&gt;Add()&lt;/code&gt;，用来设置或添加要等待完成的 goroutine 数量例如 &lt;code&gt;Add(2)&lt;/code&gt; 或者两次调用 &lt;code&gt;Add(1)&lt;/code&gt; 都会设置等待计数器的值为2，表示要等待2个 goroutine 完成&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Done()&lt;/code&gt;：每次需要等待的 goroutine 在真正完成之前，应该调用该方法来人为表示 goroutine 完成了，该方法会对等待计数器减1&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Wait()&lt;/code&gt;：在等待计数器减为0之前，&lt;code&gt;Wait()&lt;/code&gt; 会一直阻塞当前的 goroutine&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;
@@ -63,8 +63,8 @@
 &lt;span class=&#34;ln&#34;&gt;23&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;24&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;All go routines finished executing&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;25&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面激活了3个 goroutine，每次激活 goroutine 之前，都先调用 Add() 方法增加一个需要等待的 goroutine 计数。每个 goroutine 都运行 process() 函数，这个函数在执行完成时需要调用 Done() 方法来表示 goroutine 的结束。激活3个 goroutine 后，main goroutine 会执行到 Wait()，由于每个激活的 goroutine 运行的 process() 都需要睡眠2秒，所以 main goroutine 在 Wait() 这里会阻塞一段时间(大约2秒)，当所有 goroutine 都完成后，等待计数器减为0，Wait() 将不再阻塞，于是 main goroutine 得以执行后面的 Println()。&lt;/p&gt;
-&lt;p&gt;还有一点需要特别注意的是 process() 中使用指针类型的 *sync.WaitGroup 作为参数，这里不能使用值类型的 sync.WaitGroup 作为参数，因为这意味着每个 goroutine 都拷贝一份 wg，每个 goroutine 都使用自己的 wg。这显然是不合理的，这3个 goroutine 应该共享一个 wg，才能知道这3个 goroutine 都完成了。实际上，如果使用值类型的参数，main goroutine 将会永久阻塞而导致产生死锁。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面激活了3个 goroutine，每次激活 goroutine 之前，都先调用 &lt;code&gt;Add()&lt;/code&gt; 方法增加一个需要等待的 goroutine 计数。每个 goroutine 都运行 &lt;code&gt;process()&lt;/code&gt; 函数，这个函数在执行完成时需要调用 &lt;code&gt;Done()&lt;/code&gt; 方法来表示 goroutine 的结束。激活3个 goroutine 后，main goroutine 会执行到 &lt;code&gt;Wait()&lt;/code&gt;，由于每个激活的 goroutine 运行的 &lt;code&gt;process()&lt;/code&gt; 都需要睡眠2秒，所以 main goroutine 在 &lt;code&gt;Wait()&lt;/code&gt; 这里会阻塞一段时间(大约2秒)，当所有 goroutine 都完成后，等待计数器减为0，&lt;code&gt;Wait()&lt;/code&gt; 将不再阻塞，于是 main goroutine 得以执行后面的 &lt;code&gt;Println()&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;还有一点需要特别注意的是 &lt;code&gt;process()&lt;/code&gt; 中使用指针类型的 &lt;code&gt;*sync.WaitGroup&lt;/code&gt; 作为参数，这里不能使用值类型的 &lt;code&gt;sync.WaitGroup&lt;/code&gt; 作为参数，因为这意味着每个 goroutine 都拷贝一份 &lt;code&gt;wg&lt;/code&gt;，每个 goroutine 都使用自己的 &lt;code&gt;wg&lt;/code&gt;。这显然是不合理的，这3个 goroutine 应该共享一个 &lt;code&gt;wg&lt;/code&gt;，才能知道这3个 goroutine 都完成了。实际上，如果使用值类型的参数，main goroutine 将会永久阻塞而导致产生死锁。&lt;/p&gt;
         
       </description>
     </item>

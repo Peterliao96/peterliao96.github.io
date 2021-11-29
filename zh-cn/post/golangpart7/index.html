@@ -182,7 +182,7 @@
 <span class="ln">4</span>    <span class="nx">i</span><span class="o">++</span>
 <span class="ln">5</span>    <span class="k">return</span>
 <span class="ln">6</span><span class="p">}</span>
-</code></pre></div><p>defer 语句中的 fmt.Println() 参数i值在 defer 出现时就已经确定下来，实际上是拷贝了一份。后面对变量i的修改不会影响 fmt.Println() 函数的执行，仍然打印&quot;0&quot;。</p>
+</code></pre></div><p>defer 语句中的 <code>fmt.Println()</code> 参数i值在 defer 出现时就已经确定下来，实际上是拷贝了一份。后面对变量i的修改不会影响 <code>fmt.Println()</code> 函数的执行，仍然打印&quot;0&quot;。</p>
 <ul>
 <li>规则二：延迟函数执行按后进先出顺序执行，即先出现的 defer 最后执行。</li>
 </ul>
@@ -202,7 +202,7 @@
 <ul>
 <li>规则三：延迟函数可能操作主函数的具名返回值。</li>
 </ul>
-<p>定义defer的函数，即主函数可能有返回值，返回值有没有名字没有关系，defer所作用的函数，即延迟函数可能会影响到返回值。例如我们再看一下上面 deferFuncReturn() 的例子:</p>
+<p>定义defer的函数，即主函数可能有返回值，返回值有没有名字没有关系，defer 所作用的函数，即延迟函数可能会影响到返回值。例如我们再看一下上面 <code>deferFuncReturn()</code> 的例子:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="kd">func</span> <span class="nf">deferFuncReturn</span><span class="p">()</span> <span class="p">(</span><span class="nx">result</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
 <span class="ln">2</span>  <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span>
 <span class="ln">3</span>
@@ -219,10 +219,10 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="nx">result</span> <span class="p">=</span> <span class="nx">i</span>
 <span class="ln">2</span><span class="nx">result</span><span class="o">++</span>
 <span class="ln">3</span><span class="k">return</span>
-</code></pre></div><p>所以返回值为result=1。</p>
+</code></pre></div><p>所以返回值为 <code>result=1</code>。</p>
 <h2 id="2-panic">2. panic</h2>
 <ul>
-<li>主动：程序猿主动调用 panic( ) 函数；</li>
+<li>主动：程序猿主动调用 <code>panic()</code> 函数；</li>
 <li>被动：编译器的隐藏代码触发，或者内核发送给进程信号触发；</li>
 </ul>
 <p>panic 的具体实现，是依靠 defer 指针处理的，我们先来看一看 panic 的结构体：</p>

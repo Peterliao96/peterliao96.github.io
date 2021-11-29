@@ -78,7 +78,7 @@
 &lt;span class=&#34;ln&#34;&gt;20&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;21&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;3-总结&#34;&gt;3. 总结&lt;/h2&gt;
-&lt;p&gt;今天我们一起聊了面向对象中多态以及接口、类型断言的概念和写法，借此进一步了解了为什么golang中的接口设计非常出色，因为它&lt;strong&gt;解耦了接口和实现类之间的联系&lt;/strong&gt;，使得进一步增加了我们编码的灵活度，解决了供需关系颠倒的问题。&lt;/p&gt;
+&lt;p&gt;今天我们一起聊了面向对象中多态以及接口、类型断言的概念和写法，借此进一步了解了为什么 golang 中的接口设计非常出色，因为它&lt;strong&gt;解耦了接口和实现类之间的联系&lt;/strong&gt;，使得进一步增加了我们编码的灵活度，解决了供需关系颠倒的问题。&lt;/p&gt;
         
       </description>
     </item>
