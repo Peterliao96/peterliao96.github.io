@@ -185,7 +185,11 @@
 </ul>
 <h2 id="3-channel-的底层实现">3. channel 的底层实现</h2>
 <h3 id="31-channel-底层结构体">3.1 channel 底层结构体</h3>
-<center><image src="/images/channel1.png" width=800px height=480px></image></center>
+<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
+<image src="/images/channel1.png" width=800px height=480px>
+</image>
+Figure 1.channel 底层结构体
+</center>
 <ul>
 <li>buf 是有缓冲的 channel 所特有的结构，用来存储缓存数据。是个循环链表</li>
 <li>sendx 和 recvx 用于记录 buf 这个循环链表中的~发送或者接收的~index</li>
@@ -222,9 +226,17 @@
 <li>第三，释放锁</li>
 </ul>
 <p>goroutine 内存 copy 到 channel:</p>
-<center><image src="/images/channel2.png" width=800px height=480px></image></center>
+<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
+<image src="/images/channel2.png" width=800px height=480px>
+</image>
+Figure 2. 内存条 copy 进 channel
+</center>
 <p>channel 中的内存 copy 到 goroutine:</p>
-<center><image src="/images/channel3.png" width=800px height=480px></image></center>
+<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
+<image src="/images/channel3.png" width=800px height=480px>
+</image>
+Figure 3. channel 内存 copy 到内存条
+</center>
 <h3 id="33-goroutine-的阻塞操作">3.3. goroutine 的阻塞操作</h3>
 <p>goroutine 的阻塞操作，实际上是调用 send (<code>ch &lt;- xx</code>) 或者 recv ( <code>&lt;-ch</code>) 的时候主动触发的，</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln">1</span><span class="c1">//goroutine1 中，记做G1
@@ -235,9 +247,12 @@
 <span class="ln">6</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 <span class="ln">7</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 </code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (<code>ch&lt;-1</code>) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
-<center><image src="/images/channel4.png" width=800px height=480px></image></center>
+<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
+<image src="/images/channel4.png" width=800px height=480px>
+</image>
+Figure 4. Goroutine 调度
+</center>
 <p>同时G1也会被抽象成含有G1指针和 send 元素的 sudog 结构体保存到 hchan 的 sendq 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，channel 会将等待队列中的G1推出，将G1当时 send 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。</p>
-<center><image src="/images/channel5.png" width=300px height=300px></image></center>
 
 <h3>翻译:</h3>
 <ul>
@@ -373,6 +388,15 @@
   </section>
 </aside>
 
+  
+  
+  <script src="https://utteranc.es/client.js"
+  repo="Peterliao96/peterliao96.github.io"
+  issue-term="title"
+  theme="icy-dark"
+  crossorigin="anonymous"
+  async>
+  </script>
   
 </div>
     </main><svg width="0" height="0" class="hidden">
