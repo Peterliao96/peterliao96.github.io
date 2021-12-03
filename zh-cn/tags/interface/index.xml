@@ -10,20 +10,20 @@
     <lastBuildDate>Fri, 18 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/interface/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang 基础 Part 8: Interface</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart8/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart8/</link>
       <pubDate>Fri, 18 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart8/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart8/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 Golang 中 interface 的基础知识(包括 interface 的多态、类型断言)、怎样使用 interface 以及使用 interface 需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 Golang 中 &lt;code&gt;interface&lt;/code&gt; 的基础知识(包括 &lt;code&gt;interface&lt;/code&gt; 的多态、类型断言)、怎样使用 &lt;code&gt;interface&lt;/code&gt; 以及使用 &lt;code&gt;interface&lt;/code&gt; 需要注意的地方。&lt;/p&gt;
 &lt;h2 id=&#34;1-interface-及其多态&#34;&gt;1. interface 及其多态&lt;/h2&gt;
-&lt;p&gt;interface 定义了一个或一组 method(s)，若某个数据类型实现了 interface 中定义的那些被称为 &amp;quot;methods&amp;quot; 的函数，则称这些数据类型实现（implement）了 interface。举个例子来说明。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;interface&lt;/code&gt; 定义了一个或一组 method(s)，若某个数据类型实现了 &lt;code&gt;interface&lt;/code&gt; 中定义的那些被称为 &amp;quot;methods&amp;quot; 的函数，则称这些数据类型实现（implement）了 &lt;code&gt;interface&lt;/code&gt;。举个例子来说明。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//定义了一个Mammal的接口，当中声明了一个Say函数。
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Mammal&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Say&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义 Cat、Dog 和 Human 三个结构体，分别实现各自的 Say 方法：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义 &lt;code&gt;Cat&lt;/code&gt;、&lt;code&gt;Dog&lt;/code&gt; 和 &lt;code&gt;Human&lt;/code&gt; 三个结构体，分别实现各自的 &lt;code&gt;Say&lt;/code&gt; 方法：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Dog&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Cat&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
@@ -41,7 +41,7 @@
 &lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Human&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Say&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;speak&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;之后，我们尝试使用这个接口来接收各种结构体的对象，然后调用它们的 Say 方法：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;之后，我们尝试使用这个接口来接收各种结构体的对象，然后调用它们的 &lt;code&gt;Say&lt;/code&gt; 方法：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Mammal&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Dog&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;

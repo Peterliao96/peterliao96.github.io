@@ -10,20 +10,20 @@
     <lastBuildDate>Fri, 18 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang 基础 Part 8: Interface</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart8/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart8/</link>
       <pubDate>Fri, 18 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart8/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart8/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 Golang 中 interface 的基础知识(包括 interface 的多态、类型断言)、怎样使用 interface 以及使用 interface 需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 Golang 中 &lt;code&gt;interface&lt;/code&gt; 的基础知识(包括 &lt;code&gt;interface&lt;/code&gt; 的多态、类型断言)、怎样使用 &lt;code&gt;interface&lt;/code&gt; 以及使用 &lt;code&gt;interface&lt;/code&gt; 需要注意的地方。&lt;/p&gt;
 &lt;h2 id=&#34;1-interface-及其多态&#34;&gt;1. interface 及其多态&lt;/h2&gt;
-&lt;p&gt;interface 定义了一个或一组 method(s)，若某个数据类型实现了 interface 中定义的那些被称为 &amp;quot;methods&amp;quot; 的函数，则称这些数据类型实现（implement）了 interface。举个例子来说明。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;interface&lt;/code&gt; 定义了一个或一组 method(s)，若某个数据类型实现了 &lt;code&gt;interface&lt;/code&gt; 中定义的那些被称为 &amp;quot;methods&amp;quot; 的函数，则称这些数据类型实现（implement）了 &lt;code&gt;interface&lt;/code&gt;。举个例子来说明。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//定义了一个Mammal的接口，当中声明了一个Say函数。
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Mammal&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Say&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义 Cat、Dog 和 Human 三个结构体，分别实现各自的 Say 方法：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义 &lt;code&gt;Cat&lt;/code&gt;、&lt;code&gt;Dog&lt;/code&gt; 和 &lt;code&gt;Human&lt;/code&gt; 三个结构体，分别实现各自的 &lt;code&gt;Say&lt;/code&gt; 方法：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Dog&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Cat&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
@@ -41,7 +41,7 @@
 &lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;h&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Human&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Say&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;speak&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;之后，我们尝试使用这个接口来接收各种结构体的对象，然后调用它们的 Say 方法：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;之后，我们尝试使用这个接口来接收各种结构体的对象，然后调用它们的 &lt;code&gt;Say&lt;/code&gt; 方法：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Mammal&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;m&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Dog&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
@@ -85,16 +85,16 @@
     
     <item>
       <title>Golang 基础 Part 7: Defer, Panic and Recover</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart7/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart7/</link>
       <pubDate>Fri, 11 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart7/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart7/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 Golang 中关键词 defer, panic 和 recover 的基础知识、怎样使用 defer, panic 和 recover 以及使用需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 Golang 中关键词 &lt;code&gt;defer&lt;/code&gt;, &lt;code&gt;panic&lt;/code&gt; 和 &lt;code&gt;recover&lt;/code&gt; 的基础知识、怎样使用 &lt;code&gt;defer&lt;/code&gt;, &lt;code&gt;panic&lt;/code&gt; 和 &lt;code&gt;recover&lt;/code&gt; 以及使用需要注意的地方。&lt;/p&gt;
 &lt;h2 id=&#34;1-defer&#34;&gt;1. defer&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;规则一：延迟函数的参数在 defer 语句出现时就已经确定下来了。例如：&lt;/li&gt;
+&lt;li&gt;规则一：延迟函数的参数在 &lt;code&gt;defer&lt;/code&gt; 语句出现时就已经确定下来了。例如：&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;    
 &lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
@@ -102,11 +102,11 @@
 &lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;defer 语句中的 &lt;code&gt;fmt.Println()&lt;/code&gt; 参数i值在 defer 出现时就已经确定下来，实际上是拷贝了一份。后面对变量i的修改不会影响 &lt;code&gt;fmt.Println()&lt;/code&gt; 函数的执行，仍然打印&amp;quot;0&amp;quot;。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;defer&lt;/code&gt; 语句中的 &lt;code&gt;fmt.Println()&lt;/code&gt; 参数i值在 defer 出现时就已经确定下来，实际上是拷贝了一份。后面对变量i的修改不会影响 &lt;code&gt;fmt.Println()&lt;/code&gt; 函数的执行，仍然打印&amp;quot;0&amp;quot;。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;规则二：延迟函数执行按后进先出顺序执行，即先出现的 defer 最后执行。&lt;/li&gt;
+&lt;li&gt;规则二：延迟函数执行按后进先出顺序执行，即先出现的 &lt;code&gt;defer&lt;/code&gt; 最后执行。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;定义 defer 类似于入栈操作，执行 defer 类似于出栈操作。设计 defer 的初衷是简化函数返回时资源清理的动作，资源往往有依赖顺序，比如先申请A资源，再跟据A资源申请B资源，跟据B资源申请C资源，即申请顺序是:A--&amp;gt;B--&amp;gt;C，释放时往往又要反向进行。这就是把 deffer 设计成FIFO的原因。每申请到一个用完需要释放的资源时，立即定义一个 defer 来释放资源是个很好的习惯。例如：&lt;/p&gt;
+&lt;p&gt;定义 &lt;code&gt;defer&lt;/code&gt; 类似于入栈操作，执行 &lt;code&gt;defer&lt;/code&gt; 类似于出栈操作。设计 &lt;code&gt;defer&lt;/code&gt; 的初衷是简化函数返回时资源清理的动作，资源往往有依赖顺序，比如先申请A资源，再跟据A资源申请B资源，跟据B资源申请C资源，即申请顺序是:A--&amp;gt;B--&amp;gt;C，释放时往往又要反向进行。这就是把 &lt;code&gt;deffer&lt;/code&gt; 设计成FIFO的原因。每申请到一个用完需要释放的资源时，立即定义一个 &lt;code&gt;defer&lt;/code&gt; 来释放资源是个很好的习惯。例如：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;deferFuncReturn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;  &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;
@@ -117,12 +117,12 @@
 &lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;函数拥有一个具名返回值 result，函数内部声明一个变量i，defer指定一个延迟函数，最后返回变量i。延迟函数中递增 result。&lt;/p&gt;
-&lt;p&gt;函数输出2。函数的 return 语句并不是原子的，实际执行分为设置返回值--&amp;gt;ret，defer 语句实际执行在返回前，即拥有 defer 的函数返回过程是：设置返回值--&amp;gt;执行 defer--&amp;gt;ret。所以 return 语句先把 result 设置为i的值，即1，defer 语句中又把 result 递增1，所以最终返回2。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;函数拥有一个具名返回值 &lt;code&gt;result&lt;/code&gt;，函数内部声明一个变量&lt;code&gt;i&lt;/code&gt;，&lt;code&gt;defer&lt;/code&gt; 指定一个延迟函数，最后返回变量i。延迟函数中递增 &lt;code&gt;result&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;函数输出2。函数的 &lt;code&gt;return&lt;/code&gt; 语句并不是原子的，实际执行分为设置返回值--&amp;gt;ret，&lt;code&gt;defer&lt;/code&gt; 语句实际执行在返回前，即拥有 &lt;code&gt;defer&lt;/code&gt; 的函数返回过程是：设置返回值--&amp;gt;执行 defer--&amp;gt;ret。所以 &lt;code&gt;return&lt;/code&gt; 语句先把 &lt;code&gt;result&lt;/code&gt; 设置为i的值，即1，&lt;code&gt;defer&lt;/code&gt; 语句中又把 &lt;code&gt;result&lt;/code&gt; 递增1，所以最终返回2。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;规则三：延迟函数可能操作主函数的具名返回值。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;定义defer的函数，即主函数可能有返回值，返回值有没有名字没有关系，defer 所作用的函数，即延迟函数可能会影响到返回值。例如我们再看一下上面 &lt;code&gt;deferFuncReturn()&lt;/code&gt; 的例子:&lt;/p&gt;
+&lt;p&gt;定义 &lt;code&gt;defer&lt;/code&gt; 的函数，即主函数可能有返回值，返回值有没有名字没有关系，&lt;code&gt;defer&lt;/code&gt; 所作用的函数，即延迟函数可能会影响到返回值。例如我们再看一下上面 &lt;code&gt;deferFuncReturn()&lt;/code&gt; 的例子:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;deferFuncReturn&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;
@@ -132,10 +132,10 @@
 &lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;8&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;9&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;该函数的return语句可以拆分成下面两行：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;该函数的 &lt;code&gt;return&lt;/code&gt; 语句可以拆分成下面两行：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而延迟函数的执行正是在return之前，即加入defer后的执行过程如下：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而延迟函数的执行正是在 &lt;code&gt;return&lt;/code&gt; 之前，即加入 &lt;code&gt;defer&lt;/code&gt; 后的执行过程如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
@@ -145,7 +145,7 @@
 &lt;li&gt;主动：程序猿主动调用 &lt;code&gt;panic()&lt;/code&gt; 函数；&lt;/li&gt;
 &lt;li&gt;被动：编译器的隐藏代码触发，或者内核发送给进程信号触发；&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;panic 的具体实现，是依靠 defer 指针处理的，我们先来看一看 panic 的结构体：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;panic&lt;/code&gt; 的具体实现，是依靠 &lt;code&gt;defer&lt;/code&gt; 指针处理的，我们先来看一看 &lt;code&gt;panic&lt;/code&gt; 的结构体：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//runtime/runtime2.go
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;_panic&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;argp&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;unsafe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Pointer&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// pointer to arguments of deferred call run during panic; cannot move - known to liblink
@@ -154,52 +154,52 @@
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;recovered&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// whether this panic is over
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;aborted&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// the panic was aborted
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;_panic 是个结构体，存储了 defer 指针、参数，panic 列表的表头指针，和已恢复或已终止的信息。以下是 panic 的处理流程：&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;_panic&lt;/code&gt; 是个结构体，存储了 &lt;code&gt;defer&lt;/code&gt; 指针、参数，&lt;code&gt;panic&lt;/code&gt; 列表的表头指针，和已恢复或已终止的信息。以下是 &lt;code&gt;panic&lt;/code&gt; 的处理流程：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;ol&gt;
-&lt;li&gt;每个 goroutine 都有一个 panic 链表，运行时，遇到 panic 代码，会生成对应的 _panic 数据，存到这个链表的表头。&lt;/li&gt;
+&lt;li&gt;每个 goroutine 都有一个 &lt;code&gt;panic&lt;/code&gt; 链表，运行时，遇到 &lt;code&gt;panic&lt;/code&gt; 代码，会生成对应的 &lt;code&gt;_panic&lt;/code&gt; 数据，存到这个链表的表头。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;2&#34;&gt;
-&lt;li&gt;每执行完毕一个函数，如果没有 panic 发生，就跳过对应的 _panic 数据，回到正常流程，否则进入3。&lt;/li&gt;
+&lt;li&gt;每执行完毕一个函数，如果没有 &lt;code&gt;panic&lt;/code&gt; 发生，就跳过对应的 &lt;code&gt;_panic&lt;/code&gt; 数据，回到正常流程，否则进入3。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;3&#34;&gt;
-&lt;li&gt;如果有 panic 发生，处理链表中对应的 _panic，进入4。&lt;/li&gt;
+&lt;li&gt;如果有 &lt;code&gt;panic&lt;/code&gt; 发生，处理链表中对应的 &lt;code&gt;_panic&lt;/code&gt;，进入4。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;4&#34;&gt;
-&lt;li&gt;如果 defer 链表（跟 panic 链表一样，也是每个 goroutine 一个）里存在 defer，按约定顺序执行延迟代码，进入5，否则进入8。&lt;/li&gt;
+&lt;li&gt;如果 &lt;code&gt;defer&lt;/code&gt; 链表（跟 &lt;code&gt;panic&lt;/code&gt; 链表一样，也是每个 goroutine 一个）里存在 &lt;code&gt;defer&lt;/code&gt;，按约定顺序执行延迟代码，进入5，否则进入8。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;5&#34;&gt;
-&lt;li&gt;当 defer 链表执行到需要 recover 的时候，就交给 reflectcall 去调用 gorecover，进入6，否则进入7。&lt;/li&gt;
+&lt;li&gt;当 &lt;code&gt;defer&lt;/code&gt; 链表执行到需要 &lt;code&gt;recover&lt;/code&gt; 的时候，就交给 &lt;code&gt;reflectcall&lt;/code&gt; 去调用 gorecover，进入6，否则进入7。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;6&#34;&gt;
-&lt;li&gt;执行 recover，这时对应的 _panic 结构里的 recovered 字段标记为真，由 recovery 方法，负责安抚当前的 _panic，回到正常流程。&lt;/li&gt;
+&lt;li&gt;执行 &lt;code&gt;recover&lt;/code&gt;，这时对应的 &lt;code&gt;_panic&lt;/code&gt; 结构里的 recovered 字段标记为真，由 recovery 方法，负责安抚当前的 &lt;code&gt;_panic&lt;/code&gt;，回到正常流程。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;7&#34;&gt;
-&lt;li&gt;如果没 recover，那就进入死给你看流程，进入8。&lt;/li&gt;
+&lt;li&gt;如果没 &lt;code&gt;recover&lt;/code&gt;，那就进入死给你看流程，进入8。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;ol start=&#34;8&#34;&gt;
-&lt;li&gt;最后，执行 fatalpanic 方法。&lt;/li&gt;
+&lt;li&gt;最后，执行 &lt;code&gt;fatalpanic&lt;/code&gt; 方法。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;注意：因为 golang 的 gorotuine 机制，panic 在不同的 gorotuine 里面，是单独的，并不是整体处理。可能一个地方凉了，就会整体完蛋，这个要非常小心。&lt;/p&gt;
+&lt;p&gt;注意：因为 golang 的 gorotuine 机制，&lt;code&gt;panic&lt;/code&gt; 在不同的 gorotuine 里面，是单独的，并不是整体处理。可能一个地方凉了，就会整体完蛋，这个要非常小心。&lt;/p&gt;
 &lt;h2 id=&#34;3-recover&#34;&gt;3. recover&lt;/h2&gt;
-&lt;p&gt;Golang 虽然没有 try catch 机制，但它有类似 recover 的机制，&lt;/p&gt;
+&lt;p&gt;Golang 虽然没有 &lt;code&gt;try catch&lt;/code&gt; 机制，但它有类似 &lt;code&gt;recover&lt;/code&gt; 的机制，&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
@@ -219,22 +219,22 @@
 &lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;	&lt;span class=&#34;p&#34;&gt;}()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;a&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;b&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在cal函数里面每次终止的时候都会检查有没有异常产生，如果产生了我们可以处理，比如说记录日志，这样程序还可以继续执行下去。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 &lt;code&gt;cal&lt;/code&gt; 函数里面每次终止的时候都会检查有没有异常产生，如果产生了我们可以处理，比如说记录日志，这样程序还可以继续执行下去。&lt;/p&gt;
         
       </description>
     </item>
     
     <item>
       <title>Golang 基础 Part 6: Context 包</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart6/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart6/</link>
       <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart6/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart6/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 context 包在 Golang 中的基础知识、怎样使用 context 包以及使用 context 包的时候需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 &lt;code&gt;context&lt;/code&gt; 包在 Golang 中的基础知识、怎样使用 &lt;code&gt;context&lt;/code&gt; 包以及使用 &lt;code&gt;context&lt;/code&gt; 包的时候需要注意的地方。&lt;/p&gt;
 &lt;h2 id=&#34;context-包&#34;&gt;Context 包&lt;/h2&gt;
-&lt;p&gt;Context 包主要用于父子任务之间的同步取消信号，本质上是一种协程调度的方式。可以通过简化对于处理单个请求的多个 Goroutine 之间与请求域的数据、超时和退出等操作。来看两个例子：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;context&lt;/code&gt; 包主要用于父子任务之间的同步取消信号，本质上是一种协程调度的方式。可以通过简化对于处理单个请求的多个 Goroutine 之间与请求域的数据、超时和退出等操作。来看两个例子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 我们定义一个worker function
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;worker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sync&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;defer&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Done&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
@@ -263,29 +263,29 @@
 &lt;span class=&#34;ln&#34;&gt;26&lt;/span&gt;  &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;27&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;28&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当并发体超时或者 main 主动停止 worker goroutine 时，worker goroutine 都可以安全退出。&lt;/p&gt;
-&lt;p&gt;另外在使用 context 时有两点值得注意：上游任务仅仅使用 context 通知下游任务不再需要，但不会直接干涉和中断下游任务的执行，由下游任务自行决定后续的处理操作，也就是说 context 的取消操作是无侵入的；context 是线程安全的，因为 context 本身是不可变的（immutable），因此可以放心地在多个协程中传递使用。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当并发体超时或者 &lt;code&gt;main&lt;/code&gt; 主动停止 &lt;code&gt;worker&lt;/code&gt; goroutine 时，&lt;code&gt;worker&lt;/code&gt; goroutine 都可以安全退出。&lt;/p&gt;
+&lt;p&gt;另外在使用 &lt;code&gt;context&lt;/code&gt; 时有两点值得注意：上游任务仅仅使用 &lt;code&gt;context&lt;/code&gt; 通知下游任务不再需要，但不会直接干涉和中断下游任务的执行，由下游任务自行决定后续的处理操作，也就是说 &lt;code&gt;context&lt;/code&gt; 的取消操作是无侵入的；&lt;code&gt;context&lt;/code&gt; 是线程安全的，因为 &lt;code&gt;context&lt;/code&gt; 本身是不可变的（immutable），因此可以放心地在多个协程中传递使用。&lt;/p&gt;
         
       </description>
     </item>
     
     <item>
       <title>Golang 基础 Part 5: Channel</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart5/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart5/</link>
       <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart5/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart5/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 channel 在 Golang 中的基础知识、怎样使用 channel、channel的底层实现，以及使用 channel 的时候需要注意的地方。&lt;/p&gt;
-&lt;p&gt;Channel 主要采用 CSP 并发模型实现的原理：不要通过共享内存来通信，而要通过通信来实现内存共享。它分为两种：带缓冲、不带缓冲。对不带缓冲的 channel 进行的操作实际上可以看作 “同步模式”，带缓冲的则称为 “异步模式”。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 &lt;code&gt;channel&lt;/code&gt; 在 Golang 中的基础知识、怎样使用 &lt;code&gt;channel&lt;/code&gt;、&lt;code&gt;channel&lt;/code&gt;的底层实现，以及使用 &lt;code&gt;channel&lt;/code&gt; 的时候需要注意的地方。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;channel&lt;/code&gt; 主要采用 CSP 并发模型实现的原理：不要通过共享内存来通信，而要通过通信来实现内存共享。它分为两种：带缓冲、不带缓冲。对不带缓冲的 &lt;code&gt;channel&lt;/code&gt; 进行的操作实际上可以看作 “同步模式”，带缓冲的则称为 “异步模式”。&lt;/p&gt;
 &lt;h2 id=&#34;1-非缓冲的-channel&#34;&gt;1. 非缓冲的 channel&lt;/h2&gt;
 &lt;p&gt;无缓冲的通道只有当发送方和接收方都准备好时才会传送数据, 否则准备好的一方将会被阻塞。&lt;/p&gt;
 &lt;h2 id=&#34;2-带缓冲的-channel&#34;&gt;2. 带缓冲的 channel&lt;/h2&gt;
-&lt;p&gt;有缓冲的channel区别在于只有当缓冲区被填满时, 才会阻塞发送者, 只有当缓冲区为空时才会阻塞接受者。值得注意的是，&lt;/p&gt;
+&lt;p&gt;有缓冲的 &lt;code&gt;channel&lt;/code&gt; 区别在于只有当缓冲区被填满时, 才会阻塞发送者, 只有当缓冲区为空时才会阻塞接受者。值得注意的是，&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;关闭channel以后仍然可以读取数据&lt;/li&gt;
-&lt;li&gt;for range 循环可以持续从一个channel中接收数据&lt;/li&gt;
+&lt;li&gt;关闭 &lt;code&gt;channel&lt;/code&gt; 以后仍然可以读取数据&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;for range&lt;/code&gt; 循环可以持续从一个 &lt;code&gt;channel&lt;/code&gt; 中接收数据&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;3-channel-的底层实现&#34;&gt;3. channel 的底层实现&lt;/h2&gt;
 &lt;h3 id=&#34;31-channel-底层结构体&#34;&gt;3.1 channel 底层结构体&lt;/h3&gt;
@@ -294,12 +294,12 @@
 Figure 1.channel 底层结构体
 &lt;/center&gt;
 &lt;ul&gt;
-&lt;li&gt;buf 是有缓冲的 channel 所特有的结构，用来存储缓存数据。是个循环链表&lt;/li&gt;
-&lt;li&gt;sendx 和 recvx 用于记录 buf 这个循环链表中的~发送或者接收的~index&lt;/li&gt;
-&lt;li&gt;lock是个互斥锁。&lt;/li&gt;
-&lt;li&gt;recvq 和 sendq 分别是接收 (&lt;code&gt;&amp;lt;-channel&lt;/code&gt;) 或者发送 (&lt;code&gt;channel &amp;lt;- xxx&lt;/code&gt;) 的 goroutine 抽象出来的结构体 (sudog) 的队列。是个双向链表&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;buf&lt;/code&gt; 是有缓冲的 &lt;code&gt;channel&lt;/code&gt; 所特有的结构，用来存储缓存数据。是个循环链表&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sendx&lt;/code&gt; 和 &lt;code&gt;recvx&lt;/code&gt; 用于记录 &lt;code&gt;buf&lt;/code&gt; 这个循环链表中的~发送或者接收的 &lt;code&gt;~index&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lock&lt;/code&gt; 是个互斥锁。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recvq&lt;/code&gt; 和 &lt;code&gt;sendq&lt;/code&gt; 分别是接收 (&lt;code&gt;&amp;lt;-channel&lt;/code&gt;) 或者发送 (&lt;code&gt;channel &amp;lt;- xxx&lt;/code&gt;) 的 goroutine 抽象出来的结构体 (&lt;code&gt;sudog&lt;/code&gt;) 的队列。是个双向链表&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;channel 的实现借助于结构体 hchan, 如下：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;channel&lt;/code&gt; 的实现借助于结构体 &lt;code&gt;hchan&lt;/code&gt;, 如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;hchan&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;qcount&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// total data in the queue
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;dataqsiz&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// size of the circular queue
@@ -328,18 +328,18 @@ Figure 1.channel 底层结构体
 &lt;li&gt;第二，把数据从 goroutine 中 copy 到“队列”中(或者从队列中 copy 到 goroutine 中）。&lt;/li&gt;
 &lt;li&gt;第三，释放锁&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;goroutine 内存 copy 到 channel:&lt;/p&gt;
+&lt;p&gt;goroutine 内存 copy 到 &lt;code&gt;channel&lt;/code&gt;:&lt;/p&gt;
 &lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel2.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
 Figure 2. 内存条 copy 进 channel
 &lt;/center&gt;
-&lt;p&gt;channel 中的内存 copy 到 goroutine:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;channel&lt;/code&gt; 中的内存 copy 到 goroutine:&lt;/p&gt;
 &lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel3.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
 Figure 3. channel 内存 copy 到内存条
 &lt;/center&gt;
 &lt;h3 id=&#34;33-goroutine-的阻塞操作&#34;&gt;3.3. goroutine 的阻塞操作&lt;/h3&gt;
-&lt;p&gt;goroutine 的阻塞操作，实际上是调用 send (&lt;code&gt;ch &amp;lt;- xx&lt;/code&gt;) 或者 recv ( &lt;code&gt;&amp;lt;-ch&lt;/code&gt;) 的时候主动触发的，&lt;/p&gt;
+&lt;p&gt;goroutine 的阻塞操作，实际上是调用 &lt;code&gt;send&lt;/code&gt; (&lt;code&gt;ch &amp;lt;- xx&lt;/code&gt;) 或者 &lt;code&gt;recv&lt;/code&gt; ( &lt;code&gt;&amp;lt;-ch&lt;/code&gt;) 的时候主动触发的，&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//goroutine1 中，记做G1
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
@@ -347,39 +347,39 @@ Figure 3. channel 内存 copy 到内存条
 &lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当 channel 缓存满了以后，再次进行 send 操作 (&lt;code&gt;ch&amp;lt;-1&lt;/code&gt;) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当 &lt;code&gt;channel&lt;/code&gt; 缓存满了以后，再次进行 &lt;code&gt;send&lt;/code&gt; 操作 (&lt;code&gt;ch&amp;lt;-1&lt;/code&gt;) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，&lt;/p&gt;
 &lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel4.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
 Figure 4. Goroutine 调度
 &lt;/center&gt;
-&lt;p&gt;同时G1也会被抽象成含有G1指针和 send 元素的 sudog 结构体保存到 hchan 的 sendq 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，channel 会将等待队列中的G1推出，将G1当时 send 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。&lt;/p&gt;
+&lt;p&gt;同时G1也会被抽象成含有G1指针和 &lt;code&gt;send&lt;/code&gt; 元素的 &lt;code&gt;sudog&lt;/code&gt; 结构体保存到 &lt;code&gt;hchan&lt;/code&gt; 的 &lt;code&gt;sendq&lt;/code&gt; 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，&lt;code&gt;channel&lt;/code&gt; 会将等待队列中的G1推出，将G1当时 &lt;code&gt;send&lt;/code&gt; 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。&lt;/p&gt;
         
       </description>
     </item>
     
     <item>
       <title>Golang 基础 Part 4: Mutex and RWMutex 互斥锁和读写锁</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart4/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart4/</link>
       <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart4/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart4/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 Mutex 和 RWMutex 两种锁在 Golang 中的基础知识、怎样使用两种锁以及使用两种锁的时候需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 &lt;code&gt;Mutex&lt;/code&gt; 和 &lt;code&gt;RWMutex&lt;/code&gt; 两种锁在 Golang 中的基础知识、怎样使用两种锁以及使用两种锁的时候需要注意的地方。&lt;/p&gt;
         
       </description>
     </item>
     
     <item>
       <title>Golang 基础 Part 3: WaitGroup 等待组</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart3/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart3/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart3/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart3/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 WaitGroup 在 Golang 中的基础知识、怎样使用 WaitGroup 以及使用 WaitGroup 需要注意的地方。&lt;/p&gt;
-&lt;p&gt;很多情况下，我们正需要知道 goroutine 是否完成。这需要借助 &lt;code&gt;sync&lt;/code&gt; 包的 WaitGroup 来实现。WatiGroup 是 &lt;code&gt;sync&lt;/code&gt; 包中的一个 &lt;code&gt;struct&lt;/code&gt; 类型，用来收集需要等待执行完成的 goroutine。下面是它的定义：&lt;/p&gt;
+          &lt;p&gt;文章讨论了 &lt;code&gt;WaitGroup&lt;/code&gt; 在 Golang 中的基础知识、怎样使用 &lt;code&gt;WaitGroup&lt;/code&gt; 以及使用 &lt;code&gt;WaitGroup&lt;/code&gt; 需要注意的地方。&lt;/p&gt;
+&lt;p&gt;很多情况下，我们正需要知道 goroutine 是否完成。这需要借助 &lt;code&gt;sync&lt;/code&gt; 包的 &lt;code&gt;WaitGroup&lt;/code&gt; 来实现。&lt;code&gt;WaitGroup&lt;/code&gt; 是 &lt;code&gt;sync&lt;/code&gt; 包中的一个 &lt;code&gt;struct&lt;/code&gt; 类型，用来收集需要等待执行完成的 goroutine。下面是它的定义：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// Has unexported fields.
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
@@ -425,7 +425,7 @@ Figure 4. Goroutine 调度
 &lt;span class=&#34;ln&#34;&gt;23&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;24&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;All go routines finished executing&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;25&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面激活了3个 goroutine，每次激活 goroutine 之前，都先调用 &lt;code&gt;Add()&lt;/code&gt; 方法增加一个需要等待的 goroutine 计数。每个 goroutine 都运行 &lt;code&gt;process()&lt;/code&gt; 函数，这个函数在执行完成时需要调用 &lt;code&gt;Done()&lt;/code&gt; 方法来表示 goroutine 的结束。激活3个 goroutine 后，main goroutine 会执行到 &lt;code&gt;Wait()&lt;/code&gt;，由于每个激活的 goroutine 运行的 &lt;code&gt;process()&lt;/code&gt; 都需要睡眠2秒，所以 main goroutine 在 &lt;code&gt;Wait()&lt;/code&gt; 这里会阻塞一段时间(大约2秒)，当所有 goroutine 都完成后，等待计数器减为0，&lt;code&gt;Wait()&lt;/code&gt; 将不再阻塞，于是 main goroutine 得以执行后面的 &lt;code&gt;Println()&lt;/code&gt;。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面激活了3个 goroutine，每次激活 goroutine 之前，都先调用 &lt;code&gt;Add()&lt;/code&gt; 方法增加一个需要等待的 goroutine 计数。每个 goroutine 都运行 &lt;code&gt;process()&lt;/code&gt; 函数，这个函数在执行完成时需要调用 &lt;code&gt;Done()&lt;/code&gt; 方法来表示 goroutine 的结束。激活3个 goroutine 后，main goroutine 会执行到 &lt;code&gt;Wait()&lt;/code&gt;，由于每个激活的 goroutine 运行的 &lt;code&gt;process()&lt;/code&gt; 都需要睡眠2秒，所以 main goroutine 在 &lt;code&gt;Wait()&lt;/code&gt; 这里会阻塞一段时间(大约2秒)，当所有 goroutine 都完成后，等待计数器减为0，&lt;code&gt;Wait()&lt;/code&gt; 将不再阻塞，于是 &lt;code&gt;main&lt;/code&gt; goroutine 得以执行后面的 &lt;code&gt;Println()&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;还有一点需要特别注意的是 &lt;code&gt;process()&lt;/code&gt; 中使用指针类型的 &lt;code&gt;*sync.WaitGroup&lt;/code&gt; 作为参数，这里不能使用值类型的 &lt;code&gt;sync.WaitGroup&lt;/code&gt; 作为参数，因为这意味着每个 goroutine 都拷贝一份 &lt;code&gt;wg&lt;/code&gt;，每个 goroutine 都使用自己的 &lt;code&gt;wg&lt;/code&gt;。这显然是不合理的，这3个 goroutine 应该共享一个 &lt;code&gt;wg&lt;/code&gt;，才能知道这3个 goroutine 都完成了。实际上，如果使用值类型的参数，main goroutine 将会永久阻塞而导致产生死锁。&lt;/p&gt;
         
       </description>
@@ -433,10 +433,10 @@ Figure 4. Goroutine 调度
     
     <item>
       <title>Golang 基础 Part 2: Goroutine 及其调度模型和协程池的应用</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart2/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart2/</link>
       <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart2/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart2/</guid>
       <description>
         
           &lt;p&gt;文章讨论了 goroutine 在 Golang 中的基础知识、怎样使用 goroutine 和一些例子、goroutine 的调度模型、goroutine 协程池的应用，和 goroutine 在 Golang 中使用需要注意的地方。&lt;/p&gt;
@@ -503,10 +503,10 @@ Figure 1.GMP调度模型
     
     <item>
       <title>Golang 基础 Part 1: 数组和切片</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart1/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart1/</link>
       <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart1/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart1/</guid>
       <description>
         
           &lt;p&gt;文章讨论了关于数组和切片在 Golang 中的基础知识(切片的本质、扩容以及值传递问题)、怎样在 Golang 中应用他们以及使用切片需要注意的地方。&lt;/p&gt;

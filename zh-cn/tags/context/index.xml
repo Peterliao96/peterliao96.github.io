@@ -10,15 +10,15 @@
     <lastBuildDate>Fri, 04 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/context/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang 基础 Part 6: Context 包</title>
-      <link>https://peterliao96.github.io/zh-cn/post/golangpart6/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart6/</link>
       <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/golangpart6/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart6/</guid>
       <description>
         
-          &lt;p&gt;文章讨论了 context 包在 Golang 中的基础知识、怎样使用 context 包以及使用 context 包的时候需要注意的地方。&lt;/p&gt;
+          &lt;p&gt;文章讨论了 &lt;code&gt;context&lt;/code&gt; 包在 Golang 中的基础知识、怎样使用 &lt;code&gt;context&lt;/code&gt; 包以及使用 &lt;code&gt;context&lt;/code&gt; 包的时候需要注意的地方。&lt;/p&gt;
 &lt;h2 id=&#34;context-包&#34;&gt;Context 包&lt;/h2&gt;
-&lt;p&gt;Context 包主要用于父子任务之间的同步取消信号，本质上是一种协程调度的方式。可以通过简化对于处理单个请求的多个 Goroutine 之间与请求域的数据、超时和退出等操作。来看两个例子：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;context&lt;/code&gt; 包主要用于父子任务之间的同步取消信号，本质上是一种协程调度的方式。可以通过简化对于处理单个请求的多个 Goroutine 之间与请求域的数据、超时和退出等操作。来看两个例子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 我们定义一个worker function
 &lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;worker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sync&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;defer&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Done&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
@@ -47,8 +47,8 @@
 &lt;span class=&#34;ln&#34;&gt;26&lt;/span&gt;  &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;27&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;28&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当并发体超时或者 main 主动停止 worker goroutine 时，worker goroutine 都可以安全退出。&lt;/p&gt;
-&lt;p&gt;另外在使用 context 时有两点值得注意：上游任务仅仅使用 context 通知下游任务不再需要，但不会直接干涉和中断下游任务的执行，由下游任务自行决定后续的处理操作，也就是说 context 的取消操作是无侵入的；context 是线程安全的，因为 context 本身是不可变的（immutable），因此可以放心地在多个协程中传递使用。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当并发体超时或者 &lt;code&gt;main&lt;/code&gt; 主动停止 &lt;code&gt;worker&lt;/code&gt; goroutine 时，&lt;code&gt;worker&lt;/code&gt; goroutine 都可以安全退出。&lt;/p&gt;
+&lt;p&gt;另外在使用 &lt;code&gt;context&lt;/code&gt; 时有两点值得注意：上游任务仅仅使用 &lt;code&gt;context&lt;/code&gt; 通知下游任务不再需要，但不会直接干涉和中断下游任务的执行，由下游任务自行决定后续的处理操作，也就是说 &lt;code&gt;context&lt;/code&gt; 的取消操作是无侵入的；&lt;code&gt;context&lt;/code&gt; 是线程安全的，因为 &lt;code&gt;context&lt;/code&gt; 本身是不可变的（immutable），因此可以放心地在多个协程中传递使用。&lt;/p&gt;
         
       </description>
     </item>

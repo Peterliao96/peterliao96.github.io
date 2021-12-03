@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 11 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>关于k8s的 ingress 的工作流程</title>
-      <link>https://peterliao96.github.io/zh-cn/post/ingress/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/</link>
       <pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/post/ingress/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/</guid>
       <description>
         
           &lt;p&gt;文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及 nginx 配置修改后如何实现动态更新 nginx pod。&lt;/p&gt;
@@ -31,6 +31,19 @@
 Figure 1. Ingress 和 Ingress Controller
 &lt;/center&gt;
 &lt;p&gt;不考虑 nginx 状态收集等附件功能，nginx-ingress 模块在运行时主要包括三个主体：NginxController、Store、SyncQueue。其中，Store 主要负责从 kubernetes APIServer 收集运行时信息，感知各类资源（如 ingress、service等）的变化，并及时将更新事件消息（event）写入一个环形管道；SyncQueue 协程定期扫描 syncQueue 队列，发现有任务就执行更新操作，即借助 Store 完成最新运行数据的拉取，然后根据一定的规则产生新的 nginx 配置，（有些更新必须 reload，就本地写入新配置，执行 reload），然后执行动态更新操作，即构造 POST 数据，向本地 Nginx Lua 服务模块发送 post 请求，实现配置更新；NginxController 作为中间的联系者，监听 updateChannel，一旦收到配置更新事件，就向同步队列 syncQueue 里写入一个更新请求。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架</title>
+      <link>https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/</link>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/</guid>
+      <description>
+        
+          &lt;p&gt;文章介绍了关于 CRD controller 开发的目的、框架以及开源 &lt;code&gt;client-go&lt;/code&gt; 的 &lt;code&gt;kubebuilder&lt;/code&gt; 脚手架的简单使用。&lt;/p&gt;
         
       </description>
     </item>
