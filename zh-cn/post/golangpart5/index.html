@@ -248,7 +248,7 @@ Figure 3. channel 内存 copy 到内存条
 <span class="ln">7</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 </code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (<code>ch&lt;-1</code>) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-<image src="/images/channel4.png" width=820px height=480px>
+<image src="/images/channel4.png" width=830px height=480px>
 </image>
 Figure 4. Goroutine 调度
 </center>

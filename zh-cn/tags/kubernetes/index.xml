@@ -25,7 +25,11 @@
 &lt;p&gt;因此，ingress-controller 才是实现请求转发的组件，通过各种方式将它暴露在集群入口，外部对集群的请求流量会先到 ingress-controller，而 ingress 对象是用来告诉 ingress-controller 该如何转发请求，比如哪些域名哪些 path 要转发到哪些服务等等。&lt;/p&gt;
 &lt;h2 id=&#34;ingress-controller-工作流程分析&#34;&gt;Ingress-Controller 工作流程分析&lt;/h2&gt;
 &lt;p&gt;整体工作模式架构图如下（只关注配置同步更新）：&lt;/p&gt;
-&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/screenshot1.png&#34;&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/screenshot1.png&#34;&gt;
+&lt;/image&gt;
+Figure 1. Ingress 和 Ingress Controller
+&lt;/center&gt;
 &lt;p&gt;不考虑 nginx 状态收集等附件功能，nginx-ingress 模块在运行时主要包括三个主体：NginxController、Store、SyncQueue。其中，Store 主要负责从 kubernetes APIServer 收集运行时信息，感知各类资源（如 ingress、service等）的变化，并及时将更新事件消息（event）写入一个环形管道；SyncQueue 协程定期扫描 syncQueue 队列，发现有任务就执行更新操作，即借助 Store 完成最新运行数据的拉取，然后根据一定的规则产生新的 nginx 配置，（有些更新必须 reload，就本地写入新配置，执行 reload），然后执行动态更新操作，即构造 POST 数据，向本地 Nginx Lua 服务模块发送 post 请求，实现配置更新；NginxController 作为中间的联系者，监听 updateChannel，一旦收到配置更新事件，就向同步队列 syncQueue 里写入一个更新请求。&lt;/p&gt;
         
       </description>
