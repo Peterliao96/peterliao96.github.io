@@ -39,12 +39,12 @@
 
     
     
-    <link rel="preload" href="https://peterliao96.github.io/css/styles.ee3b9488ef041710052f5c22837bf044d13ac251377aac559881157179229b04be4ae0027ad7b3c9b0cf469d0b37c82b8fcc5956709efe67b73f0e08a76bba3d.css" integrity = "sha512-7juUiO8EFxAFL1wig3vwRNE6wlE3eqxVmIEVcXkimwS&#43;SuACetezybDPRp0LN8grj8xZVnCe/me3Pw4Ip2u6PQ==" as="style" crossorigin="anonymous">
+    <link rel="preload" href="https://peterliao96.github.io/css/styles.4fa9d328afffe9daec5448be0a1e2c8692cf3b3df2f6e46507829a2a606083fea7fed6acf5b3c89bf60c571b6cfbdb2aa2a66fe34fd5d0cc23cc63d7ec968a47.css" integrity = "sha512-T6nTKK//6drsVEi&#43;Ch4shpLPOz3y9uRlB4KaKmBgg/6n/tas9bPIm/YMVxts&#43;9sqoqZv40/V0MwjzGPX7JaKRw==" as="style" crossorigin="anonymous">
     <link rel="preload" href="https://peterliao96.github.io/js/bundle.min.14825dc619648aeca2e4e66c65ef7d06ea216e6a64cd503f64d2fe77950ee425c47fc0f2cf993c2d656f534914619a2c47c8313438a810ed5008db38a46a812d.js" as="script" integrity=
     "sha512-FIJdxhlkiuyi5OZsZe99BuohbmpkzVA/ZNL&#43;d5UO5CXEf8Dyz5k8LWVvU0kUYZosR8gxNDioEO1QCNs4pGqBLQ==" crossorigin="anonymous">
 
     
-    <link rel="stylesheet" type="text/css" href="https://peterliao96.github.io/css/styles.ee3b9488ef041710052f5c22837bf044d13ac251377aac559881157179229b04be4ae0027ad7b3c9b0cf469d0b37c82b8fcc5956709efe67b73f0e08a76bba3d.css" integrity="sha512-7juUiO8EFxAFL1wig3vwRNE6wlE3eqxVmIEVcXkimwS&#43;SuACetezybDPRp0LN8grj8xZVnCe/me3Pw4Ip2u6PQ==" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://peterliao96.github.io/css/styles.4fa9d328afffe9daec5448be0a1e2c8692cf3b3df2f6e46507829a2a606083fea7fed6acf5b3c89bf60c571b6cfbdb2aa2a66fe34fd5d0cc23cc63d7ec968a47.css" integrity="sha512-T6nTKK//6drsVEi&#43;Ch4shpLPOz3y9uRlB4KaKmBgg/6n/tas9bPIm/YMVxts&#43;9sqoqZv40/V0MwjzGPX7JaKRw==" crossorigin="anonymous">
     
   </head>
   
@@ -248,7 +248,7 @@ Figure 3. channel 内存 copy 到内存条
 <span class="ln">7</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 </code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (<code>ch&lt;-1</code>) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-<image src="/images/channel4.png" width=800px height=480px>
+<image src="/images/channel4.png" width=820px height=480px>
 </image>
 Figure 4. Goroutine 调度
 </center>
