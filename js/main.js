@@ -1,18 +1,18 @@
 (function () {
 	function setUtterancesTheme() {
-		let theme = window.localStorage.getItem("theme") || "light";
+		let theme = window.localStorage.getItem("colorMode") || "lit";
 		let msg = {
 			type: "set-theme",
 			theme: "dark-blue"
 		};
-		if (theme == "light") {
+		if (theme == "lit") {
 			msg.theme = "github-light"
 		}
 		document.querySelector('.utterances-frame').contentWindow.postMessage(msg, 'https://utteranc.es')
 	}
 
-	document.querySelector('.theme-toggle').addEventListener("click", () => {
+	document.querySelector('.color_choice').addEventListener("click", () => {
 		setTimeout(setUtterancesTheme, 500);
 	})
-	setTimeout(setUtterancesTheme, 2000);
+	setTimeout(setUtterancesTheme, 1000);
 })();
