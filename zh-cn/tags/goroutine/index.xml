@@ -203,7 +203,7 @@ Figure 4. Goroutine 调度
 &lt;li&gt;G代表 goroutine，每次使用 go 关键字的时候，都会创建一个G对象&lt;/li&gt;
 &lt;/ul&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/gmp.png&#34; width=820px height=480px&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/gmp.png&#34; width=840px height=480px&gt;
 &lt;/image&gt;
 Figure 1.GMP调度模型
 &lt;/center&gt;
