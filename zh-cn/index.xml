@@ -316,9 +316,8 @@ Figure 1. Ingress 和 Ingress Controller
 &lt;/ul&gt;
 &lt;h2 id=&#34;3-channel-的底层实现&#34;&gt;3. channel 的底层实现&lt;/h2&gt;
 &lt;h3 id=&#34;31-channel-底层结构体&#34;&gt;3.1 channel 底层结构体&lt;/h3&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel1.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/channel1.png&#34; width=840px height=480px&gt;
-&lt;/image&gt;
 Figure 1.channel 底层结构体
 &lt;/center&gt;
 &lt;ul&gt;
@@ -357,15 +356,13 @@ Figure 1.channel 底层结构体
 &lt;li&gt;第三，释放锁&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;goroutine 内存 copy 到 channel:&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel2.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/channel2.png&#34; width=840px height=480px&gt;
-&lt;/image&gt;
 Figure 2. 内存条 copy 进 channel
 &lt;/center&gt;
 &lt;p&gt;channel 中的内存 copy 到 goroutine:&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel3.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/channel3.png&#34; width=840px height=480px&gt;
-&lt;/image&gt;
 Figure 3. channel 内存 copy 到内存条
 &lt;/center&gt;
 &lt;h3 id=&#34;33-goroutine-的阻塞操作&#34;&gt;3.3. goroutine 的阻塞操作&lt;/h3&gt;
@@ -378,9 +375,8 @@ Figure 3. channel 内存 copy 到内存条
 &lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当 channel 缓存满了以后，再次进行 send 操作 (&lt;code&gt;ch&amp;lt;-1&lt;/code&gt;) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel4.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/channel4.png&#34; width=840px height=480px&gt;
-&lt;/image&gt;
 Figure 4. Goroutine 调度
 &lt;/center&gt;
 &lt;p&gt;同时G1也会被抽象成含有G1指针和 send 元素的 sudog 结构体保存到 hchan 的 sendq 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，channel 会将等待队列中的G1推出，将G1当时 send 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。&lt;/p&gt;
@@ -503,9 +499,11 @@ Figure 4. Goroutine 调度
 &lt;li&gt;P代表处理器，每一个运行的M（线程）都必须绑定一个P（处理器）&lt;/li&gt;
 &lt;li&gt;G代表 goroutine，每次使用 go 关键字的时候，都会创建一个G对象&lt;/li&gt;
 &lt;/ul&gt;
-&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/gmp.png&#34; width=840px height=480px&gt;
+&lt;center&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/gmp.png&#34; width=800px height=480px&gt;
 &lt;/image&gt;
+&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
 Figure 1.GMP调度模型
 &lt;/center&gt;
 &lt;p&gt;当前有两个P，各自绑定了一个M，每个P上挂了一个本地 goroutine 队列，也有一个全局 goroutine 队列。流程：&lt;/p&gt;
@@ -547,15 +545,16 @@ Figure 1.GMP调度模型
 &lt;li&gt;切片的容量(cap)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;举个例子，现在有一个数组 &lt;code&gt;a := [8]int {0,1,2,3,4,5,6,7}&lt;/code&gt;，切片 &lt;code&gt;s1 := a[:5]&lt;/code&gt;，相应示意图如下&lt;/p&gt;
-&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/slice1.png&#34; width=840px height=480px&gt;
+&lt;center&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/slice1.png&#34; width=800px height=480px&gt;
 &lt;/image&gt;
+&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
 Figure 1.切片 s1 和底层数组 a
 &lt;/center&gt;
 &lt;p&gt;切片 &lt;code&gt;s2 := a[3:6]&lt;/code&gt;，相应示意图如下：&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/slice2.png&#34; width=840px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
 &lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
-&lt;image src=&#34;https://peterliao96.github.io/images/slice2.png&#34; width=840px height=480px&gt;
-&lt;/image&gt;
 Figure 2.切片 s2 和底层数组 a
 &lt;/center&gt;
 &lt;h2 id=&#34;2-切片的扩容&#34;&gt;2. 切片的扩容&lt;/h2&gt;
