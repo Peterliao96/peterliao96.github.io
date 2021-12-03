@@ -186,7 +186,7 @@
 <h2 id="3-channel-的底层实现">3. channel 的底层实现</h2>
 <h3 id="31-channel-底层结构体">3.1 channel 底层结构体</h3>
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-<image src="/images/channel1.png" width=800px height=480px>
+<image src="/images/channel1.png" width=840px height=480px>
 </image>
 Figure 1.channel 底层结构体
 </center>
@@ -227,13 +227,13 @@ Figure 1.channel 底层结构体
 </ul>
 <p>goroutine 内存 copy 到 channel:</p>
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-<image src="/images/channel2.png" width=800px height=480px>
+<image src="/images/channel2.png" width=840px height=480px>
 </image>
 Figure 2. 内存条 copy 进 channel
 </center>
 <p>channel 中的内存 copy 到 goroutine:</p>
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-<image src="/images/channel3.png" width=800px height=480px>
+<image src="/images/channel3.png" width=840px height=480px>
 </image>
 Figure 3. channel 内存 copy 到内存条
 </center>
@@ -248,7 +248,7 @@ Figure 3. channel 内存 copy 到内存条
 <span class="ln">7</span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
 </code></pre></div><p>当 channel 缓存满了以后，再次进行 send 操作 (<code>ch&lt;-1</code>) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，</p>
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-<image src="/images/channel4.png" width=830px height=480px>
+<image src="/images/channel4.png" width=840px height=480px>
 </image>
 Figure 4. Goroutine 调度
 </center>
