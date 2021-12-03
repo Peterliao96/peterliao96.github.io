@@ -3,7 +3,7 @@
 		let theme = window.localStorage.getItem("colorMode") || "lit";
 		let msg = {
 			type: "set-theme",
-			theme: "dark-blue"
+			theme: "icy-dark"
 		};
 		if (theme == "lit") {
 			msg.theme = "github-light"
