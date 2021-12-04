@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 18 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/series/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang Part 8: Interface</title>
-      <link>https://peterliao96.github.io/golang/golangpart8/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart8/</link>
       <pubDate>Fri, 18 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart8/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart8/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the &lt;code&gt;interface&lt;/code&gt; in Golang, how to use it in Golang and tips when using &lt;code&gt;interface&lt;/code&gt; in Golang.&lt;/p&gt;
@@ -24,10 +24,10 @@
     
     <item>
       <title>Golang Part 7: Defer, Panic and Recover</title>
-      <link>https://peterliao96.github.io/golang/golangpart7/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart7/</link>
       <pubDate>Fri, 11 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart7/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart7/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the use of keywords &lt;code&gt;defer&lt;/code&gt;, &lt;code&gt;panic&lt;/code&gt; and &lt;code&gt;recover&lt;/code&gt; in Golang, how to use them in Golang and tips when using these three keywords in Golang.&lt;/p&gt;
@@ -41,10 +41,10 @@
     
     <item>
       <title>Golang Part 6: Context</title>
-      <link>https://peterliao96.github.io/golang/golangpart6/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart6/</link>
       <pubDate>Fri, 04 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart6/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart6/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the &lt;code&gt;context&lt;/code&gt; package in Golang, how to use it in Golang and tips when using the package &lt;code&gt;context&lt;/code&gt; in Golang.&lt;/p&gt;
@@ -55,10 +55,10 @@
     
     <item>
       <title>Golang Part 5: Channel</title>
-      <link>https://peterliao96.github.io/golang/golangpart5/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart5/</link>
       <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart5/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart5/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the &lt;code&gt;channel&lt;/code&gt; in Golang, how to use it in Golang and tips when using &lt;code&gt;channel&lt;/code&gt; in Golang.&lt;/p&gt;
@@ -69,10 +69,10 @@
     
     <item>
       <title>Golang Part 4: Mutex and RWMutex</title>
-      <link>https://peterliao96.github.io/golang/golangpart4/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart4/</link>
       <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart4/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart4/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the &lt;code&gt;Mutex&lt;/code&gt; and &lt;code&gt;RWMutex&lt;/code&gt; in Golang, how to use them in Golang and tips when using &lt;code&gt;Mutex&lt;/code&gt; and &lt;code&gt;RWMutex&lt;/code&gt; in Golang.&lt;/p&gt;
@@ -83,10 +83,10 @@
     
     <item>
       <title>Golang Part 3: WaitGroup</title>
-      <link>https://peterliao96.github.io/golang/golangpart3/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart3/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart3/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart3/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the &lt;code&gt;WaitGroup&lt;/code&gt; in Golang, how to use it in Golang and tips when using &lt;code&gt;WaitGroup&lt;/code&gt; in Golang.&lt;/p&gt;
@@ -97,10 +97,10 @@
     
     <item>
       <title>Golang Part 2: Goroutine</title>
-      <link>https://peterliao96.github.io/golang/golangpart2/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart2/</link>
       <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart2/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart2/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the goroutine in Golang, how to use it in Golang with several examples and what needs to be noticed when using goroutine in Golang.&lt;/p&gt;
@@ -111,10 +111,10 @@
     
     <item>
       <title>Golang Part 1: Slice and Array</title>
-      <link>https://peterliao96.github.io/golang/golangpart1/</link>
+      <link>https://peterliao96.github.io/post/golang/golangpart1/</link>
       <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/golang/golangpart1/</guid>
+      <guid>https://peterliao96.github.io/post/golang/golangpart1/</guid>
       <description>
         
           &lt;p&gt;The article discusses about the slice and array in Golang, how to use them in Golang and what needs to be noticed when using slice in Golang.&lt;/p&gt;

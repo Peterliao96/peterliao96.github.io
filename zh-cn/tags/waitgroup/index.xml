@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 14 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/waitgroup/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang 基础 Part 3: WaitGroup 等待组</title>
-      <link>https://peterliao96.github.io/zh-cn/golang/golangpart3/</link>
+      <link>https://peterliao96.github.io/zh-cn/post/golang/golangpart3/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://peterliao96.github.io/zh-cn/golang/golangpart3/</guid>
+      <guid>https://peterliao96.github.io/zh-cn/post/golang/golangpart3/</guid>
       <description>
         
           &lt;p&gt;文章讨论了 &lt;code&gt;WaitGroup&lt;/code&gt; 在 Golang 中的基础知识、怎样使用 &lt;code&gt;WaitGroup&lt;/code&gt; 以及使用 &lt;code&gt;WaitGroup&lt;/code&gt; 需要注意的地方。&lt;/p&gt;
