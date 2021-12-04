@@ -8,5 +8,19 @@
     <language>en-us</language>
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
     <lastBuildDate>Fri, 21 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/tags/mutex/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang Part 4: Mutex and RWMutex</title>
+      <link>https://peterliao96.github.io/golang/golangpart4/</link>
+      <pubDate>Fri, 21 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/golang/golangpart4/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the &lt;code&gt;Mutex&lt;/code&gt; and &lt;code&gt;RWMutex&lt;/code&gt; in Golang, how to use them in Golang and tips when using &lt;code&gt;Mutex&lt;/code&gt; and &lt;code&gt;RWMutex&lt;/code&gt; in Golang.&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+        
+      </description>
+    </item>
+    
   </channel>
 </rss>

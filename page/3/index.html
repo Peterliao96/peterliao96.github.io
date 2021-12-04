@@ -1,8 +1,9 @@
 
 <!DOCTYPE html>
-<html lang="zh-cn" data-figures="" class="page">
+<html lang="en" data-figures="" class="home">
   <head>
-<title>Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理 | Hyper Container</title>
+	<meta name="generator" content="Hugo 0.90.0-DEV" />
+<title>Hyper Container</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,25 +16,26 @@
 </script>
 
   
-<meta property="og:locale" content="zh-cn" />
+<meta property="og:locale" content="en" />
 
-<meta property="og:locale:alternate" content="en" />
+<meta property="og:locale:alternate" content="zh-cn" />
 
-<meta property="og:type" content="article">
-<meta name="description" content="文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod">
+<meta property="og:type" content="website">
+<meta name="description" content="A theme based on VMware&#39;s Clarity Design System for publishing technical blogs with Hugo.">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@1244240338Liao">
-<meta name="twitter:title" content="Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理" />
-<meta property="og:url" content="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart2/" />
-<meta property="og:title" content="Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理" />
-<meta property="og:description" content="文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod" />
-<meta property="og:image" content="https://peterliao96.github.io/images/k8s-3.jpeg" />
+<meta name="twitter:title" content="" />
+<meta property="og:url" content="https://peterliao96.github.io/" />
+<meta property="og:title" content="" />
+<meta property="og:description" content="A theme based on VMware&#39;s Clarity Design System for publishing technical blogs with Hugo." />
+<meta property="og:image" content="https://peterliao96.github.io/images/thumbnail.png" />
 
 <link rel="apple-touch-icon" sizes="180x180" href="https://peterliao96.github.io/icons/hyperContainer2.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://peterliao96.github.io/icons/hyperContainer.png">
 <link rel="manifest" href="https://peterliao96.github.io/icons/site.webmanifest">
 
-<link rel="canonical" href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart2/">
+<link rel="canonical" href="https://peterliao96.github.io/">
+<link rel="alternate" type="application/rss+xml" href="https://peterliao96.github.io/index.xml" title="Hyper Container" />
 
     
 
@@ -54,7 +56,7 @@
   <body data-code="60" data-lines="false" id="documentTop">
 
 <header class="nav_header" >
-  <nav class="nav"><a href='https://peterliao96.github.io/zh-cn/' class="nav_brand nav_item" title="Hyper Container">
+  <nav class="nav"><a href='https://peterliao96.github.io/' class="nav_brand nav_item" title="Hyper Container">
   <img src="https://peterliao96.github.io/logos/logo3.png" class="logo" alt="Hyper Container">
   <div class="nav_close">
     <div><svg class="icon">
@@ -71,25 +73,25 @@
       
         
 
-  <div class="nav_parent">
-    <a href="https://peterliao96.github.io/zh-cn/" class="nav_item" title="Kubernetes">Kubernetes </a>
+  <div class="nav_parent nav_active">
+    <a href="https://peterliao96.github.io/" class="nav_item" title="Kubernetes">Kubernetes </a>
   </div>
   <div class="nav_parent">
-    <a href="https://peterliao96.github.io/zh-cn/golang" class="nav_item" title="golang">golang </a>
+    <a href="https://peterliao96.github.io/golang" class="nav_item" title="golang">golang </a>
   </div>
   <div class="nav_parent">
-    <a href="https://peterliao96.github.io/zh-cn/algorithms" class="nav_item" title="算法">算法 </a>
+    <a href="https://peterliao96.github.io/algorithms" class="nav_item" title="algorithms">algorithms </a>
   </div>
   <div class="nav_parent">
-    <a href="https://peterliao96.github.io/zh-cn/" class="nav_item" title="联系方式">联系方式 <img src='https://peterliao96.github.io/icons/caret-icon.svg' alt="icon" class="nav_icon"></a>
+    <a href="https://peterliao96.github.io/" class="nav_item" title="Links">Links <img src='https://peterliao96.github.io/icons/caret-icon.svg' alt="icon" class="nav_icon"></a>
     <div class="nav_sub">
       <span class="nav_child"></span>
         <a href="https://github.com/Peterliao96" class="nav_child nav_item" title="Github">Github</a>
-        <a href="https://www.linkedin.com/" class="nav_child nav_item" title="领英">领英</a>
+        <a href="https://www.linkedin.com/in/peter-junqi-liao-431193128/" class="nav_child nav_item" title="LinkedIn">LinkedIn</a>
     </div>
   </div>
   <div class="nav_parent">
-    <a href="https://peterliao96.github.io/zh-cn/about/" class="nav_item" title="关于">关于 </a>
+    <a href="https://peterliao96.github.io/about/" class="nav_item" title="About">About </a>
   </div>
       
       <div class="nav_parent">
@@ -136,40 +138,48 @@
 </header>
 
     <main>
+
   
+
 <div class="grid-inverse wrap content">
-  <article class="post_content">
-    <h1 class="post_title">Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理</h1>
+  <ul class="posts" id="posts">
+      <li class="post_item">
+  <div class="excerpt">
+    <div class="excerpt_header">
+      <h3 class="post_link">
+        <a href="https://peterliao96.github.io/algorithms/binarysearch/leetcode_4/" title="Binary Search：leetcode 4 Medium of two merged sorted array">Binary Search：leetcode 4 Medium of two merged sorted array</a>
+      </h3>
+      
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
 </svg></span>
     <span class="post_date">
-      Dec 17, 2020</span>
-    <span class="post_time"> · 2 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes' title="kubernetes" class="post_tag button button_translucent">kubernetes
-        </a><a href='https://peterliao96.github.io/zh-cn/tags/crd' title="CRD" class="post_tag button button_translucent">CRD
-        </a><a href='https://peterliao96.github.io/zh-cn/tags/operator' title="operator" class="post_tag button button_translucent">operator
+      Jan 1, 2020</span>
+    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/tags/golang' title="Golang" class="post_tag button button_translucent">Golang
+        </a><a href='https://peterliao96.github.io/tags/binary' title="Binary" class="post_tag button button_translucent">Binary
+        </a><a href='https://peterliao96.github.io/tags/array' title="Array" class="post_tag button button_translucent">Array
         </a>
     </span>
     <span class="page_only">&nbsp;·
   <div class="post_share">
-    分享到:
-    <a href="https://twitter.com/intent/tweet?text=Kubernetes%20CRD%20%e6%8e%a7%e5%88%b6%e5%99%a8%e5%bc%80%e5%8f%91%e7%b3%bb%e5%88%97%20Part%202%3a%20CRD%20controller%20%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fcrd%2fcrdpart2%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Binary%20Search%ef%bc%9aleetcode%204%20Medium%20of%20two%20merged%20sorted%20array&url=https%3a%2f%2fpeterliao96.github.io%2falgorithms%2fbinarysearch%2fleetcode_4%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#twitter"></use>
 </svg>
     </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fcrd%2fcrdpart2%2f&t=Kubernetes%20CRD%20%e6%8e%a7%e5%88%b6%e5%99%a8%e5%bc%80%e5%8f%91%e7%b3%bb%e5%88%97%20Part%202%3a%20CRD%20controller%20%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2falgorithms%2fbinarysearch%2fleetcode_4%2f&t=Binary%20Search%ef%bc%9aleetcode%204%20Medium%20of%20two%20merged%20sorted%20array" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#facebook"></use>
 </svg>
     </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="分享到 LinkedIn" rel="nofollow">
+    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#linkedin"></use>
 </svg>
     </a>
-    <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart2/" title="Copy Link" class="link link_yank">
+    <a href="https://peterliao96.github.io/algorithms/binarysearch/leetcode_4/" title="Copy Link" class="link link_yank">
       <svg class="icon">
   <use xlink:href="#copy"></use>
 </svg>
@@ -178,110 +188,98 @@
   </span>
   </div>
 
-    
-    <p>文章主要讲解了关于 CRD controller 实现原理以及 <code>client-go</code> 源码实现过程。</p>
-<hr></hr>
-<p>我们自定义的资源 CRD 创建完成以后，其实如果没有一个 controller 运行它的话，它并没有起到任何用处。于是，我们需要通过创建 controller 来运行 CRD。
-要想了解 controller 的实现原理和方式，我们就需要了解下 <code>client-go</code> 这个库的实现，Kubernetes 部分代码也是基于这个库实现的，也包含了开发自定义控制器时可以使用的各种机制。
-下图显示了 <code>client-go</code> 中的各个组件是如何公众的以及与我们要编写的自定义控制器代码的交互入口：</p>
-<center>
-<image src="/images/client-go-controller-interaction.jpeg" width=600px height=400px>
-</image>
-</center>
-<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-Figure 1.client-go 实现流程图
-</center>
-<p><code>client-go</code> 组件：</p>
-<ul>
-<li><code>Reflector</code>：通过 Kubernetes API 监控 Kubernetes 的资源类型 采用 List/Watch 机制, 可以 Watch 任何资源包括 CRD 添加 object 对象到 FIFO 队列，然后 Informer 会从队列里面取数据</li>
-<li><code>Informer</code>：controller 机制的基础，循环处理 object 对象 从 Reflector 取出数据，然后将数据给到 Indexer 去缓存，提供对象事件的 <code>handler</code> 接口，只要给 Informer 添加 <code>ResourceEventHandler</code> 实例的回调函数，去实现 <code>OnAdd(obj interface{})</code>、 <code>OnUpdate(oldObj, newObj interface{})</code> 和 <code>OnDelete(obj interface{})</code> 这三个方法，就可以处理好资源的创建、更新和删除操作了。</li>
-<li><code>Indexer</code>：提供 object 对象的索引，是线程安全的，缓存对象信息</li>
-</ul>
-<p><code>controller</code> 组件：</p>
-<ul>
-<li><code>Informer reference</code>: controller 需要创建合适的 Informer 才能通过 Informer reference 操作资源对象</li>
-<li><code>Indexer reference</code>: controller 创建 Indexer reference 然后去利用索引做相关处理</li>
-<li><code>Resource Event Handlers</code>：Informer 会回调这些 handlers</li>
-<li><code>Work queue</code>: Resource Event Handlers 被回调后将 key 写到工作队列，这里的 key 相当于事件通知，后面根据取出事件后，做后续的处理</li>
-<li><code>Process Item</code>：从工作队列中取出 key 后进行后续处理，具体处理可以通过 Indexer reference controller 可以直接创建上述两个引用对象去处理，也可以采用工厂模式，官方都有相关示例</li>
-</ul>
-<p>自定义 Controller 的控制流:</p>
-<center>
-<image src="/images/client-go-controller-workflow.png" width=600px height=300px>
-</image>
-</center>
-<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
-Figure 2.controller 的控制流
-</center>
-<p>如上图所示主要有两个部分，一个是发生在 <code>SharedIndexInformer</code> 中，另外一个是在自定义控制器中。</p>
-<ul>
-<li><code>Reflector</code> 通过 Kubernetes APIServer 执行对象（比如 Pod）的 <code>ListAndWatch</code> 查询，记录和对象相关的三种事件类型 <code>Added、Updated、Deleted</code>，然后将它们传递到 <code>DeltaFIFO</code> 中去。</li>
-<li><code>DeltaFIFO</code> 接收到事件和 <code>watch</code> 事件对应的对象，然后将他们转换为 <code>Delta</code> 对象，这些 <code>Delta</code> 对象被附加到队列中去等待处理，对于已经删除的，会检查线程安全的 <code>store</code> 中是否已经存在该文件，从而可以避免在不存在某些内容时排队执行删除操作。</li>
-<li><code>Cache</code> 控制器（不要和自定义控制器混淆）调用 <code>Pop()</code> 方法从 <code>DeltaFIFO</code> 队列中出队列，<code>Delta</code> 对象将传递到 <code>SharedIndexInformer</code> 的 <code>HandleDelta()</code> 方法中以进行进一步处理。</li>
-<li>根据 <code>Delta</code> 对象的操作（事件）类型，首先在 <code>HandleDeltas</code> 方法中通过 indexer 的方法将对对象保存到线程安全的 <code>Store</code> 中，然后，通过 <code>SharedIndexInformer</code> 中的 <code>sharedProcessor</code> 的 <code>distribution()</code> 方法将这些对象发送到事件 <code>handlers</code>，这些事件处理器由自定义控制器通过 <code>SharedInformer</code> 的方法比如 <code>AddEventHandlerWithResyncPeriod()</code> 进行注册。</li>
-<li>已注册的事件处理器通过添加或更新时间的 <code>MetaNamespaceKeyFunc()</code> 或删除事件的 <code>DeletionHandingMetaNamespaceKeyFunc()</code> 将对象转换为格式为 <code>namespace/name</code> 或只是 <code>name</code> 的 <code>key</code>，然后将这个 <code>key</code> 添加到自定义控制器的 <code>workqueue</code> 中，<code>workqueues</code> 的实现可以在 <code>util/workqueue</code> 中找到。</li>
-<li>自定义的控制器通过调用定义的 <code>handlers</code> 处理器从 <code>workqueue</code> 中 <code>pop</code> 一个 <code>key</code> 出来进行处理，<code>handlers</code> 将调用 <code>indexer</code> 的 <code>GetByKey()</code> 从线程安全的 <code>store</code> 中获取对象，我们的业务逻辑就是在这个 <code>handlers</code> 里面实现。</li>
-</ul>
-<p>本文摘录于 Kubernetes 文档中的 <a href="https://www.qikqiak.com/k3s/controller/crd/#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3">CRD controller 原理实现</a>。</p>
+    </div>
+    <div class="excerpt_footer partition">
+      <div class="excerpt_thumbnail">
+        <img src='https://peterliao96.github.io/images/golang_leetcode.png' alt="Binary Search：leetcode 4 Medium of two merged sorted array">
+      </div>
+      
+        <div>
+          <p class="pale">
+            
+              <p>The article explains how to implement binary search method to find the medium of two merged sorted array with the best approach.</p>
+            
+          </p>
+          <a href="https://peterliao96.github.io/algorithms/binarysearch/leetcode_4/" title="Read More" class="excerpt_more button">Read More</a>
+        </div>
+      </div>
+    </div>
+  </li>
 
-<h3>翻译:</h3>
-<ul>
-  
     <li>
-      <a href="https://peterliao96.github.io/post/k8s/crd/crdpart2/">&#34;English&#34; |</a>
+    <ul class="pagination pagination-default">
+      <li class="page-item">
+        <a href="/" aria-label="First" class="page-link" role="button"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/page/2/" aria-label="Previous" class="page-link" role="button"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item active">
+        <a href="#" aria-current="page" aria-label="Page 3" class="page-link" role="button">3</a>
+      </li>
+      <li class="page-item disabled">
+        <a href="#" aria-disabled="true" aria-label="Next" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a href="#" aria-disabled="true" aria-label="Last" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
     </li>
-  
-</ul> 
-
-  </article>
+  </ul>
 <aside class="sidebar">
   <section class="sidebar_inner">
         <div class="author_header">
-          <img src="https://peterliao96.github.io/images/selfie-modified.png" alt="廖隽祺 photo">
-          <h2>廖隽祺</h2>
+          <img src="https://peterliao96.github.io/images/selfie-modified.png" alt="Junqi Liao photo">
+          <h2>Junqi Liao</h2>
         </div>
       <div class="author_bio">
-        Golang 开发，云原生兴趣爱好者，对技术充满着执着与热爱，持续创新与提升。
+        Golang developer, cloud native enthusiasts, continual incremental improvement.
       </div>
-      <a href='https://peterliao96.github.io/zh-cn/about/' class="button mt-1" role="button" title='阅读更多'>阅读更多</a>
-    <h2 class="mt-4">精选文章</h2>
+      <a href='https://peterliao96.github.io/about/' class="button mt-1" role="button" title='Read More'>Read More</a>
+    <h2 class="mt-4">Featured Posts</h2>
     <ul>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/" class="nav-link" title="Kubernetes 网络: 关于k8s的 ingress 的工作流程">Kubernetes 网络: 关于k8s的 ingress 的工作流程</a>
+        <a href="https://peterliao96.github.io/post/k8s/network/ingress/" class="nav-link" title="Kubernetes Network: Workflow of Ingress in Kubernetes">Kubernetes Network: Workflow of Ingress in Kubernetes</a>
       </li>
     </ul>
-    <h2 class="mt-4">最新文章</h2>
+    <h2 class="mt-4">Recent Posts</h2>
     <ul class="flex-column">
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/" class="nav-link" title="Kubernetes 网络: 关于k8s的 ingress 的工作流程">Kubernetes 网络: 关于k8s的 ingress 的工作流程</a>
+        <a href="https://peterliao96.github.io/post/k8s/network/ingress/" class="nav-link" title="Kubernetes Network: Workflow of Ingress in Kubernetes">Kubernetes Network: Workflow of Ingress in Kubernetes</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/" class="nav-link" title="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架">Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架</a>
+        <a href="https://peterliao96.github.io/post/k8s/crd/crdpart2/" class="nav-link" title="Kubernetes CRD Operator SDK Part 2: Architecture of CRD Controller">Kubernetes CRD Operator SDK Part 2: Architecture of CRD Controller</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/golang/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
+        <a href="https://peterliao96.github.io/post/k8s/crd/crdpart1/" class="nav-link" title="Kubernetes CRD Operator SDK Part 1: Architecture of CRD and Operator">Kubernetes CRD Operator SDK Part 1: Architecture of CRD and Operator</a>
       </li>
     </ul>
     <div>
-      <h2 class="mt-4 taxonomy" id="categories-section">分类</h2>
+      <h2 class="mt-4 taxonomy" id="categories-section">Categories</h2>
       <nav class="tags_nav">
-        <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
+        <a href='https://peterliao96.github.io/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
           <span class="button_tally">10</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
+        <a href='https://peterliao96.github.io/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
           KUBERNETES
           <span class="button_tally">3</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/categories/crd/' class="post_tag button button_translucent" title="crd">
-          CRD
+        <a href='https://peterliao96.github.io/categories/algorithms/' class="post_tag button button_translucent" title="algorithms">
+          ALGORITHMS
           <span class="button_tally">2</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/categories/%E7%AE%97%E6%B3%95/' class="post_tag button button_translucent" title="算法">
-          算法
+        <a href='https://peterliao96.github.io/categories/crd/' class="post_tag button button_translucent" title="crd">
+          CRD
           <span class="button_tally">2</span>
         </a>
         
@@ -289,20 +287,20 @@ Figure 2.controller 的控制流
       </nav>
     </div>
     <div>
-      <h2 class="mt-4 taxonomy" id="series-section">专栏</h2>
+      <h2 class="mt-4 taxonomy" id="series-section">Series</h2>
       <nav class="tags_nav">
-        <a href='https://peterliao96.github.io/zh-cn/series/golang/' class="post_tag button button_translucent" title="golang">
+        <a href='https://peterliao96.github.io/series/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
           <span class="button_tally">8</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/series/crd/' class="post_tag button button_translucent" title="crd">
-          CRD
+        <a href='https://peterliao96.github.io/series/binary-search/' class="post_tag button button_translucent" title="binary-search">
+          BINARY-SEARCH
           <span class="button_tally">2</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/series/%E4%BA%8C%E5%88%86%E6%B3%95/' class="post_tag button button_translucent" title="二分法">
-          二分法
+        <a href='https://peterliao96.github.io/series/crd/' class="post_tag button button_translucent" title="crd">
+          CRD
           <span class="button_tally">2</span>
         </a>
         
@@ -310,141 +308,141 @@ Figure 2.controller 的控制流
       </nav>
     </div>
     <div>
-      <h2 class="mt-4 taxonomy" id="tags-section">标签</h2>
+      <h2 class="mt-4 taxonomy" id="tags-section">Tags</h2>
       <nav class="tags_nav">
-        <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
+        <a href='https://peterliao96.github.io/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
           <span class="button_tally">10</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
+        <a href='https://peterliao96.github.io/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
           GOROUTINE
           <span class="button_tally">3</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
+        <a href='https://peterliao96.github.io/tags/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
           KUBERNETES
           <span class="button_tally">3</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class="post_tag button button_translucent" title="crd">
+        <a href='https://peterliao96.github.io/tags/array/' class="post_tag button button_translucent" title="array">
+          ARRAY
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/tags/binary/' class="post_tag button button_translucent" title="binary">
+          BINARY
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/tags/crd/' class="post_tag button button_translucent" title="crd">
           CRD
           <span class="button_tally">2</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class="post_tag button button_translucent" title="operator">
+        <a href='https://peterliao96.github.io/tags/operator/' class="post_tag button button_translucent" title="operator">
           OPERATOR
           <span class="button_tally">2</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/%E4%BA%8C%E5%88%86%E6%B3%95/' class="post_tag button button_translucent" title="二分法">
-          二分法
-          <span class="button_tally">2</span>
-        </a>
-        
-        <a href='https://peterliao96.github.io/zh-cn/tags/%E6%95%B0%E7%BB%84/' class="post_tag button button_translucent" title="数组">
-          数组
-          <span class="button_tally">2</span>
-        </a>
-        
-        <a href='https://peterliao96.github.io/zh-cn/tags/channel/' class="post_tag button button_translucent" title="channel">
+        <a href='https://peterliao96.github.io/tags/channel/' class="post_tag button button_translucent" title="channel">
           CHANNEL
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/context/' class="post_tag button button_translucent" title="context">
+        <a href='https://peterliao96.github.io/tags/context/' class="post_tag button button_translucent" title="context">
           CONTEXT
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class="post_tag button button_translucent" title="ingress">
+        <a href='https://peterliao96.github.io/tags/ingress/' class="post_tag button button_translucent" title="ingress">
           INGRESS
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class="post_tag button button_translucent" title="interface">
+        <a href='https://peterliao96.github.io/tags/interface/' class="post_tag button button_translucent" title="interface">
           INTERFACE
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/mutex/' class="post_tag button button_translucent" title="mutex">
+        <a href='https://peterliao96.github.io/tags/mutex/' class="post_tag button button_translucent" title="mutex">
           MUTEX
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/waitgroup/' class="post_tag button button_translucent" title="waitgroup">
-          WAITGROUP
+        <a href='https://peterliao96.github.io/tags/service/' class="post_tag button button_translucent" title="service">
+          SERVICE
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/%E5%88%87%E7%89%87/' class="post_tag button button_translucent" title="切片">
-          切片
+        <a href='https://peterliao96.github.io/tags/slice/' class="post_tag button button_translucent" title="slice">
+          SLICE
           <span class="button_tally">1</span>
         </a>
         
         
         <br>
-        <div class="post_tags_toggle button">所有标签</div>
+        <div class="post_tags_toggle button">All Tags</div>
         <div class="post_tags">
           <div class="tags_list">
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/channel/' class=" post_tag button button_translucent" data-position=1 title="channel">CHANNEL<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/array/' class=" post_tag button button_translucent" data-position=2 title="array">ARRAY<span class="button_tally">2</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/context/' class=" post_tag button button_translucent" data-position=1 title="context">CONTEXT<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/binary/' class=" post_tag button button_translucent" data-position=2 title="binary">BINARY<span class="button_tally">2</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class=" post_tag button button_translucent" data-position=2 title="crd">CRD<span class="button_tally">2</span>
+            <a href='https://peterliao96.github.io/tags/channel/' class=" post_tag button button_translucent" data-position=1 title="channel">CHANNEL<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class=" post_tag button button_translucent" data-position=10 title="golang">GOLANG<span class="button_tally">10</span>
+            <a href='https://peterliao96.github.io/tags/context/' class=" post_tag button button_translucent" data-position=1 title="context">CONTEXT<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class=" post_tag button button_translucent" data-position=3 title="goroutine">GOROUTINE<span class="button_tally">3</span>
+            <a href='https://peterliao96.github.io/tags/crd/' class=" post_tag button button_translucent" data-position=2 title="crd">CRD<span class="button_tally">2</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class=" post_tag button button_translucent" data-position=1 title="ingress">INGRESS<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/golang/' class=" post_tag button button_translucent" data-position=10 title="golang">GOLANG<span class="button_tally">10</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class=" post_tag button button_translucent" data-position=1 title="interface">INTERFACE<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/goroutine/' class=" post_tag button button_translucent" data-position=3 title="goroutine">GOROUTINE<span class="button_tally">3</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes/' class=" post_tag button button_translucent" data-position=3 title="kubernetes">KUBERNETES<span class="button_tally">3</span>
+            <a href='https://peterliao96.github.io/tags/ingress/' class=" post_tag button button_translucent" data-position=1 title="ingress">INGRESS<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/mutex/' class=" post_tag button button_translucent" data-position=1 title="mutex">MUTEX<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/interface/' class=" post_tag button button_translucent" data-position=1 title="interface">INTERFACE<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class=" post_tag button button_translucent" data-position=2 title="operator">OPERATOR<span class="button_tally">2</span>
+            <a href='https://peterliao96.github.io/tags/kubernetes/' class=" post_tag button button_translucent" data-position=3 title="kubernetes">KUBERNETES<span class="button_tally">3</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/waitgroup/' class=" post_tag button button_translucent" data-position=1 title="waitgroup">WAITGROUP<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/mutex/' class=" post_tag button button_translucent" data-position=1 title="mutex">MUTEX<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/%E4%BA%8C%E5%88%86%E6%B3%95/' class=" post_tag button button_translucent" data-position=2 title="二分法">二分法<span class="button_tally">2</span>
+            <a href='https://peterliao96.github.io/tags/operator/' class=" post_tag button button_translucent" data-position=2 title="operator">OPERATOR<span class="button_tally">2</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/%E5%88%87%E7%89%87/' class=" post_tag button button_translucent" data-position=1 title="切片">切片<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/service/' class=" post_tag button button_translucent" data-position=1 title="service">SERVICE<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/%E6%95%B0%E7%BB%84/' class=" post_tag button button_translucent" data-position=2 title="数组">数组<span class="button_tally">2</span>
+            <a href='https://peterliao96.github.io/tags/slice/' class=" post_tag button button_translucent" data-position=1 title="slice">SLICE<span class="button_tally">1</span>
             </a>
             
             
-            <a href='https://peterliao96.github.io/zh-cn/tags/%E6%9C%8D%E5%8A%A1service/' class=" post_tag button button_translucent" data-position=1 title="服务service">服务SERVICE<span class="button_tally">1</span>
+            <a href='https://peterliao96.github.io/tags/waitgroup/' class=" post_tag button button_translucent" data-position=1 title="waitgroup">WAITGROUP<span class="button_tally">1</span>
             </a>
             
             <div class="tags_sort"><span title="sort alphabetically">[A~Z]</span><span title="sort by count">[0~9]</span>
@@ -459,15 +457,9 @@ Figure 2.controller 的控制流
   </section>
 </aside>
 
-  
-  <script src="https://utteranc.es/client.js"
-          repo="Peterliao96/peterliao96.github.io"
-          issue-term="title"
-          theme="icy-dark"
-          crossorigin="anonymous"
-          async>
-  </script>
 </div>
+
+
     </main><svg width="0" height="0" class="hidden">
   <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
     <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>

@@ -8,5 +8,43 @@
     <language>en-us</language>
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
     <lastBuildDate>Sat, 01 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/tags/array/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang Part 1: Slice and Array</title>
+      <link>https://peterliao96.github.io/golang/golangpart1/</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/golang/golangpart1/</guid>
+      <description>
+        
+          &lt;p&gt;The article discusses about the slice and array in Golang, how to use them in Golang and what needs to be noticed when using slice in Golang.&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Binary Search：leetcode 4 Medium of two merged sorted array</title>
+      <link>https://peterliao96.github.io/algorithms/binarysearch/leetcode_4/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/algorithms/binarysearch/leetcode_4/</guid>
+      <description>
+        
+          &lt;p&gt;The article explains how to implement binary search method to find the medium of two merged sorted array with the best approach.&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+&lt;p&gt;Given two integers \(m\) 和 \(n\) with sorted arrays &lt;code&gt;nums1&lt;/code&gt; and &lt;code&gt;nums2&lt;/code&gt;。Please find the medium of the merged sorted array. The time complexity should be  \(O(log (m+n))\) 。&lt;/p&gt;
+&lt;p&gt;Example 1：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-latex&#34; data-lang=&#34;latex&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;Input：nums1 = [1,3], nums2 = [2]
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;Output：2.00000
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;Explain：mergedArray = [1,2,3] ，medium = 2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Example 2：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-latex&#34; data-lang=&#34;latex&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;Input：nums1 = [1,2], nums2 = [3,4]
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;Output：2.50000
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;Explain：mergedArray = [1,2,3,4] ，medium = (2 + 3) / 2 = 2.5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+        
+      </description>
+    </item>
+    
   </channel>
 </rss>

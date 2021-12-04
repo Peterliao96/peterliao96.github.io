@@ -8,5 +8,227 @@
     <language>en-us</language>
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
     <lastBuildDate>Fri, 28 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/goroutine/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 基础 Part 5: Channel</title>
+      <link>https://peterliao96.github.io/zh-cn/golang/golangpart5/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/golang/golangpart5/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 &lt;code&gt;channel&lt;/code&gt; 在 Golang 中的基础知识、怎样使用 &lt;code&gt;channel&lt;/code&gt;、&lt;code&gt;channel&lt;/code&gt;的底层实现，以及使用 &lt;code&gt;channel&lt;/code&gt; 的时候需要注意的地方。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+&lt;p&gt;&lt;code&gt;channel&lt;/code&gt; 主要采用 CSP 并发模型实现的原理：不要通过共享内存来通信，而要通过通信来实现内存共享。它分为两种：带缓冲、不带缓冲。对不带缓冲的 &lt;code&gt;channel&lt;/code&gt; 进行的操作实际上可以看作 “同步模式”，带缓冲的则称为 “异步模式”。&lt;/p&gt;
+&lt;h2 id=&#34;1-非缓冲的-channel&#34;&gt;1. 非缓冲的 channel&lt;/h2&gt;
+&lt;p&gt;无缓冲的通道只有当发送方和接收方都准备好时才会传送数据, 否则准备好的一方将会被阻塞。&lt;/p&gt;
+&lt;h2 id=&#34;2-带缓冲的-channel&#34;&gt;2. 带缓冲的 channel&lt;/h2&gt;
+&lt;p&gt;有缓冲的 &lt;code&gt;channel&lt;/code&gt; 区别在于只有当缓冲区被填满时, 才会阻塞发送者, 只有当缓冲区为空时才会阻塞接受者。值得注意的是，&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;关闭 &lt;code&gt;channel&lt;/code&gt; 以后仍然可以读取数据&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;for range&lt;/code&gt; 循环可以持续从一个 &lt;code&gt;channel&lt;/code&gt; 中接收数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;3-channel-的底层实现&#34;&gt;3. channel 的底层实现&lt;/h2&gt;
+&lt;h3 id=&#34;31-channel-底层结构体&#34;&gt;3.1 channel 底层结构体&lt;/h3&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel1.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 1.channel 底层结构体
+&lt;/center&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;buf&lt;/code&gt; 是有缓冲的 &lt;code&gt;channel&lt;/code&gt; 所特有的结构，用来存储缓存数据。是个循环链表&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sendx&lt;/code&gt; 和 &lt;code&gt;recvx&lt;/code&gt; 用于记录 &lt;code&gt;buf&lt;/code&gt; 这个循环链表中的~发送或者接收的 &lt;code&gt;~index&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lock&lt;/code&gt; 是个互斥锁。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recvq&lt;/code&gt; 和 &lt;code&gt;sendq&lt;/code&gt; 分别是接收 (&lt;code&gt;&amp;lt;-channel&lt;/code&gt;) 或者发送 (&lt;code&gt;channel &amp;lt;- xxx&lt;/code&gt;) 的 goroutine 抽象出来的结构体 (&lt;code&gt;sudog&lt;/code&gt;) 的队列。是个双向链表&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;channel&lt;/code&gt; 的实现借助于结构体 &lt;code&gt;hchan&lt;/code&gt;, 如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;hchan&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;qcount&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// total data in the queue
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;dataqsiz&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// size of the circular queue
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;buf&lt;/span&gt;      &lt;span class=&#34;nx&#34;&gt;unsafe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Pointer&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// points to an array of dataqsiz elements
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;elemsize&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint16&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;closed&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint32&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;elemtype&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;_type&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// element type
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;sendx&lt;/span&gt;    &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// send index
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;recvx&lt;/span&gt;    &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// receive index
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;recvq&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;waitq&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// list of recv waiters
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;sendq&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;waitq&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// list of send waiters
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// lock protects all fields in hchan, as well as several
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// fields in sudogs blocked on this channel.
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;//
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// Do not change another G&amp;#39;s status while holding this lock
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// (in particular, do not ready a G), as this can deadlock
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;// with stack shrinking.
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;lock&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutex&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;32-sendrecv-的细化操作&#34;&gt;3.2 send/recv 的细化操作&lt;/h3&gt;
+&lt;p&gt;缓存链表中以上每一步的操作，都是需要加锁操作的！&lt;/p&gt;
+&lt;p&gt;每一步的操作的细节可以细化为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一，加锁&lt;/li&gt;
+&lt;li&gt;第二，把数据从 goroutine 中 copy 到“队列”中(或者从队列中 copy 到 goroutine 中）。&lt;/li&gt;
+&lt;li&gt;第三，释放锁&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;goroutine 内存 copy 到 &lt;code&gt;channel&lt;/code&gt;:&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel2.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 2. 内存条 copy 进 channel
+&lt;/center&gt;
+&lt;p&gt;&lt;code&gt;channel&lt;/code&gt; 中的内存 copy 到 goroutine:&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel3.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 3. channel 内存 copy 到内存条
+&lt;/center&gt;
+&lt;h3 id=&#34;33-goroutine-的阻塞操作&#34;&gt;3.3. goroutine 的阻塞操作&lt;/h3&gt;
+&lt;p&gt;goroutine 的阻塞操作，实际上是调用 &lt;code&gt;send&lt;/code&gt; (&lt;code&gt;ch &amp;lt;- xx&lt;/code&gt;) 或者 &lt;code&gt;recv&lt;/code&gt; ( &lt;code&gt;&amp;lt;-ch&lt;/code&gt;) 的时候主动触发的，&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//goroutine1 中，记做G1
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当 &lt;code&gt;channel&lt;/code&gt; 缓存满了以后，再次进行 &lt;code&gt;send&lt;/code&gt; 操作 (&lt;code&gt;ch&amp;lt;-1&lt;/code&gt;) 的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用，&lt;/p&gt;
+&lt;center&gt;&lt;image src=&#34;https://peterliao96.github.io/images/channel4.png&#34; width=800px height=480px&gt;&lt;/image&gt;&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 4. Goroutine 调度
+&lt;/center&gt;
+&lt;p&gt;同时G1也会被抽象成含有G1指针和 &lt;code&gt;send&lt;/code&gt; 元素的 &lt;code&gt;sudog&lt;/code&gt; 结构体保存到 &lt;code&gt;hchan&lt;/code&gt; 的 &lt;code&gt;sendq&lt;/code&gt; 中等待被唤醒。直到另一个 goroutine G2从缓存队列中取出数据，&lt;code&gt;channel&lt;/code&gt; 会将等待队列中的G1推出，将G1当时 &lt;code&gt;send&lt;/code&gt; 的数据推到缓存中，然后调用 Go 的 scheduler，唤醒G1，并把G1放到可运行的 goroutine 队列中。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 3: WaitGroup 等待组</title>
+      <link>https://peterliao96.github.io/zh-cn/golang/golangpart3/</link>
+      <pubDate>Fri, 14 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/golang/golangpart3/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 &lt;code&gt;WaitGroup&lt;/code&gt; 在 Golang 中的基础知识、怎样使用 &lt;code&gt;WaitGroup&lt;/code&gt; 以及使用 &lt;code&gt;WaitGroup&lt;/code&gt; 需要注意的地方。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+&lt;p&gt;很多情况下，我们正需要知道 goroutine 是否完成。这需要借助 &lt;code&gt;sync&lt;/code&gt; 包的 &lt;code&gt;WaitGroup&lt;/code&gt; 来实现。&lt;code&gt;WaitGroup&lt;/code&gt; 是 &lt;code&gt;sync&lt;/code&gt; 包中的一个 &lt;code&gt;struct&lt;/code&gt; 类型，用来收集需要等待执行完成的 goroutine。下面是它的定义：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// Has unexported fields.
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// A WaitGroup waits for a collection of goroutines to finish. The main
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// goroutine calls Add to set the number of goroutines to wait for. Then each
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// of the goroutines runs and calls Done when finished. At the same time, Wait
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// can be used to block until all goroutines have finished.
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// A WaitGroup must not be copied after first use.
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;delta&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Done&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;它有3个方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Add()&lt;/code&gt;：每次激活想要被等待完成的 goroutine 之前，先调用 &lt;code&gt;Add()&lt;/code&gt;，用来设置或添加要等待完成的 goroutine 数量例如 &lt;code&gt;Add(2)&lt;/code&gt; 或者两次调用 &lt;code&gt;Add(1)&lt;/code&gt; 都会设置等待计数器的值为2，表示要等待2个 goroutine 完成&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Done()&lt;/code&gt;：每次需要等待的 goroutine 在真正完成之前，应该调用该方法来人为表示 goroutine 完成了，该方法会对等待计数器减1&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Wait()&lt;/code&gt;：在等待计数器减为0之前，&lt;code&gt;Wait()&lt;/code&gt; 会一直阻塞当前的 goroutine&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;  
+&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;    &lt;span class=&#34;s&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;    &lt;span class=&#34;s&#34;&gt;&amp;#34;sync&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;    &lt;span class=&#34;s&#34;&gt;&amp;#34;time&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;process&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sync&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;  
+&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;started Goroutine &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Second&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Printf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Goroutine %d ended\n&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Done&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;  
+&lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;no&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;    &lt;span class=&#34;kd&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;sync&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;WaitGroup&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;19&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;no&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;20&lt;/span&gt;        &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;21&lt;/span&gt;        &lt;span class=&#34;k&#34;&gt;go&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;process&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;22&lt;/span&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;23&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;wg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;24&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;All go routines finished executing&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;25&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面激活了3个 goroutine，每次激活 goroutine 之前，都先调用 &lt;code&gt;Add()&lt;/code&gt; 方法增加一个需要等待的 goroutine 计数。每个 goroutine 都运行 &lt;code&gt;process()&lt;/code&gt; 函数，这个函数在执行完成时需要调用 &lt;code&gt;Done()&lt;/code&gt; 方法来表示 goroutine 的结束。激活3个 goroutine 后，main goroutine 会执行到 &lt;code&gt;Wait()&lt;/code&gt;，由于每个激活的 goroutine 运行的 &lt;code&gt;process()&lt;/code&gt; 都需要睡眠2秒，所以 main goroutine 在 &lt;code&gt;Wait()&lt;/code&gt; 这里会阻塞一段时间(大约2秒)，当所有 goroutine 都完成后，等待计数器减为0，&lt;code&gt;Wait()&lt;/code&gt; 将不再阻塞，于是 &lt;code&gt;main&lt;/code&gt; goroutine 得以执行后面的 &lt;code&gt;Println()&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;还有一点需要特别注意的是 &lt;code&gt;process()&lt;/code&gt; 中使用指针类型的 &lt;code&gt;*sync.WaitGroup&lt;/code&gt; 作为参数，这里不能使用值类型的 &lt;code&gt;sync.WaitGroup&lt;/code&gt; 作为参数，因为这意味着每个 goroutine 都拷贝一份 &lt;code&gt;wg&lt;/code&gt;，每个 goroutine 都使用自己的 &lt;code&gt;wg&lt;/code&gt;。这显然是不合理的，这3个 goroutine 应该共享一个 &lt;code&gt;wg&lt;/code&gt;，才能知道这3个 goroutine 都完成了。实际上，如果使用值类型的参数，main goroutine 将会永久阻塞而导致产生死锁。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Golang 基础 Part 2: Goroutine 及其调度模型和协程池的应用</title>
+      <link>https://peterliao96.github.io/zh-cn/golang/golangpart2/</link>
+      <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://peterliao96.github.io/zh-cn/golang/golangpart2/</guid>
+      <description>
+        
+          &lt;p&gt;文章讨论了 goroutine 在 Golang 中的基础知识、怎样使用 goroutine 和一些例子、goroutine 的调度模型、goroutine 协程池的应用，和 goroutine 在 Golang 中使用需要注意的地方。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
+&lt;h2 id=&#34;1-协程coroutine&#34;&gt;1. 协程(coroutine)&lt;/h2&gt;
+&lt;p&gt;在讲 goroutine 之前让我们先了解一下协程 (coroutine)，和线程类似，共享堆，不共享栈，协程的切换一般由程序员在代码中显式控制。它避免了上下文切换的额外耗费，兼顾了多线程的优点，简化了高并发程序的复杂。&lt;/p&gt;
+&lt;h2 id=&#34;2-golang-的协程goroutine&#34;&gt;2. Golang 的协程(goroutine)&lt;/h2&gt;
+&lt;p&gt;Goroutine 和其他语言的协程（coroutine）在使用方式上类似，但在区别上看，协程不是并发的，而Goroutine支持并发的。因此Goroutine可以理解为一种Go语言的协程。同时它可以运行在一个或多个线程上。来看个例子:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Hello&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;hello everybody , I&amp;#39;m Junqi Liao&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;go&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Hello&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Golang梦工厂&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的程序，我们使用go又开启了一个 goroutine 执行 Hello 方法，但是我们运行这个程序，运行结果如下:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;Golang梦工厂
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里出现这个问题的原因是我们启动的 goroutine 在 main 执行完就退出了。解决办法可以用 channel 通信让 goroutine 告诉 main 我执行完了，您再打印 “Golang梦工厂”。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Hello&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;hello everybody , I&amp;#39;m asong&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;  &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;go&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Hello&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Golang梦工厂&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;3-goroutine-的调度模型&#34;&gt;3. Goroutine 的调度模型&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;M代表线程&lt;/li&gt;
+&lt;li&gt;P代表处理器，每一个运行的M（线程）都必须绑定一个P（处理器）&lt;/li&gt;
+&lt;li&gt;G代表 goroutine，每次使用 go 关键字的时候，都会创建一个G对象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;center&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/gmp.png&#34; width=800px height=480px&gt;
+&lt;/image&gt;
+&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 1.GMP调度模型
+&lt;/center&gt;
+&lt;p&gt;当前有两个P，各自绑定了一个M，每个P上挂了一个本地 goroutine 队列，也有一个全局 goroutine 队列。流程：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每次使用 go 关键字声明时，一个G对象被创建并加入到本地G队列或者全局G队列。&lt;/li&gt;
+&lt;li&gt;检查是否有空闲的P（处理器），若有那么创建一个M（若有正在 sleep 的M那么直接唤醒它）与其绑定，然后这个M循环执行 goroutine 任务。&lt;/li&gt;
+&lt;li&gt;G任务执行的顺序是，先从本地队列中找。但若某个M（线程）发现本地队列为空，那么会从全局队列中截取 goroutine 来执行（一次性转移（全局队列的G个数/P个数））。如果全局队列也空，那么会随机从别的P那里截取 “一半” 的 goroutine 过来（偷窃任务），若所有的P的队列都为空，那么该M（线程）就会陷入 sleep。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;4-goroutine-协程池&#34;&gt;4. goroutine 协程池&lt;/h2&gt;
+&lt;p&gt;超大规模并发的场景下，不加限制的大规模的 goroutine 可能造成内存暴涨，给机器带来极大的压力，吞吐量下降和处理速度变慢还是其次，更危险的是可能使得程序 crash。所以，goroutine 池化是有其现实意义的。&lt;/p&gt;
+&lt;p&gt;首先，100w个任务，是不是真的需要100w个 goroutine 来处理？未必！用1w个 goroutine 也一样可以处理，让一个 goroutine 多处理几个任务就是了嘛，池化的核心优势就在于对 goroutine 的复用。此举首先极大减轻了 runtime 调度 goroutine 的压力，其次，便是降低了对内存的消耗。&lt;/p&gt;
+&lt;h3 id=&#34;41-设计思路&#34;&gt;4.1 设计思路&lt;/h3&gt;
+&lt;p&gt;Goroutine Pool 的实现思路大致如下：&lt;/p&gt;
+&lt;p&gt;启动服务之时先初始化一个 Goroutine Pool 池，这个 Pool 维护了一个类似栈的 LIFO 队列 ，里面存放负责处理任务的 Worker，然后在 client 端提交 task 到 Pool 中之后，在 Pool 内部，接收 task 之后的核心操作是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;检查当前 Worker 队列中是否有空闲的 Worker，如果有，取出执行当前的 task；&lt;/li&gt;
+&lt;li&gt;没有空闲 Worker，判断当前在运行的 Worker 是否已超过该 Pool 的容量，是 — 阻塞等待直至有 Worker 被放回 Pool；否 — 新开一个 Worker（goroutine）处理；&lt;/li&gt;
+&lt;li&gt;每个 Worker 执行完任务之后，放回 Pool 的队列中等待。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;按照这个设计思路，一个高性能的 Goroutine Pool，较好地解决了上述的大规模调度和资源占用的问题，在执行速度和内存占用方面相较于原生 goroutine 并发占有明显的优势，尤其是内存占用，因为复用，所以规避了无脑启动大规模 goroutine 的弊端，可以节省大量的内存。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
   </channel>
 </rss>
