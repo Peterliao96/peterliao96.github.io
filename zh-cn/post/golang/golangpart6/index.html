@@ -175,34 +175,41 @@
     <p>文章讨论了 <code>context</code> 包在 Golang 中的基础知识、怎样使用 <code>context</code> 包以及使用 <code>context</code> 包的时候需要注意的地方。</p>
 <h2 id="context-包">Context 包</h2>
 <p><code>context</code> 包主要用于父子任务之间的同步取消信号，本质上是一种协程调度的方式。可以通过简化对于处理单个请求的多个 Goroutine 之间与请求域的数据、超时和退出等操作。来看两个例子：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="c1">// 我们定义一个worker function
-</span><span class="ln"> 2</span><span class="c1"></span><span class="kd">func</span> <span class="nf">worker</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">wg</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-<span class="ln"> 3</span>  <span class="k">defer</span> <span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
-<span class="ln"> 4</span>
-<span class="ln"> 5</span>  <span class="k">for</span> <span class="p">{</span>
-<span class="ln"> 6</span>    <span class="k">select</span> <span class="p">{</span>
-<span class="ln"> 7</span>    <span class="k">case</span> <span class="o">&lt;-</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
-<span class="ln"> 8</span>      <span class="k">return</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Err</span><span class="p">()</span>
-<span class="ln"> 9</span>    <span class="k">default</span><span class="p">:</span>
-<span class="ln">10</span>      <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">)</span>
-<span class="ln">11</span>    <span class="p">}</span>
-<span class="ln">12</span>  <span class="p">}</span>
-<span class="ln">13</span><span class="p">}</span>
-<span class="ln">14</span>
-<span class="ln">15</span><span class="kd">func</span> <span class="nf">main</span><span class="p">(){</span>
-<span class="ln">16</span>  <span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-<span class="ln">17</span>
-<span class="ln">18</span>  <span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
-<span class="ln">19</span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
-<span class="ln">20</span>    <span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="ln">21</span>    <span class="k">go</span> <span class="nf">worker</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">wg</span><span class="p">)</span>
-<span class="ln">22</span>  <span class="p">}</span>
-<span class="ln">23</span>  <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-<span class="ln">24</span>  <span class="nf">cancel</span><span class="p">()</span>
-<span class="ln">25</span>
-<span class="ln">26</span>  <span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
-<span class="ln">27</span><span class="p">}</span>
-<span class="ln">28</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kn">package</span> <span class="nx">main</span>
+<span class="ln"> 2</span><span class="kn">import</span><span class="p">(</span>
+<span class="ln"> 3</span>	<span class="s">&#34;context&#34;</span>
+<span class="ln"> 4</span>	<span class="s">&#34;sync&#34;</span>
+<span class="ln"> 5</span>	<span class="s">&#34;fmt&#34;</span>
+<span class="ln"> 6</span>	<span class="s">&#34;time&#34;</span>
+<span class="ln"> 7</span><span class="p">)</span>
+<span class="ln"> 8</span><span class="c1">// 我们定义一个worker function
+</span><span class="ln"> 9</span><span class="c1"></span><span class="kd">func</span> <span class="nf">worker</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">wg</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+<span class="ln">10</span>  <span class="k">defer</span> <span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+<span class="ln">11</span>
+<span class="ln">12</span>  <span class="k">for</span> <span class="p">{</span>
+<span class="ln">13</span>    <span class="k">select</span> <span class="p">{</span>
+<span class="ln">14</span>    <span class="k">case</span> <span class="o">&lt;-</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
+<span class="ln">15</span>      <span class="k">return</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Err</span><span class="p">()</span>
+<span class="ln">16</span>    <span class="k">default</span><span class="p">:</span>
+<span class="ln">17</span>      <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">)</span>
+<span class="ln">18</span>    <span class="p">}</span>
+<span class="ln">19</span>  <span class="p">}</span>
+<span class="ln">20</span><span class="p">}</span>
+<span class="ln">21</span>
+<span class="ln">22</span><span class="kd">func</span> <span class="nf">main</span><span class="p">(){</span>
+<span class="ln">23</span>  <span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="ln">24</span>
+<span class="ln">25</span>  <span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="ln">26</span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+<span class="ln">27</span>    <span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="ln">28</span>    <span class="k">go</span> <span class="nf">worker</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">wg</span><span class="p">)</span>
+<span class="ln">29</span>  <span class="p">}</span>
+<span class="ln">30</span>  <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="ln">31</span>  <span class="nf">cancel</span><span class="p">()</span>
+<span class="ln">32</span>
+<span class="ln">33</span>  <span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="ln">34</span><span class="p">}</span>
+<span class="ln">35</span>
 </code></pre></div><p>当并发体超时或者 <code>main</code> 主动停止 <code>worker</code> goroutine 时，<code>worker</code> goroutine 都可以安全退出。</p>
 <p>另外在使用 <code>context</code> 时有两点值得注意：上游任务仅仅使用 <code>context</code> 通知下游任务不再需要，但不会直接干涉和中断下游任务的执行，由下游任务自行决定后续的处理操作，也就是说 <code>context</code> 的取消操作是无侵入的；<code>context</code> 是线程安全的，因为 <code>context</code> 本身是不可变的（immutable），因此可以放心地在多个协程中传递使用。</p>
 
@@ -238,10 +245,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/" class="nav-link" title="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架">Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart2/" class="nav-link" title="Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理">Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golang/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/" class="nav-link" title="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架">Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架</a>
       </li>
     </ul>
     <div>
@@ -249,17 +256,17 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">9</span>
+          <span class="button_tally">10</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
           KUBERNETES
-          <span class="button_tally">2</span>
+          <span class="button_tally">3</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/crd-build/' class="post_tag button button_translucent" title="crd-build">
           CRD-BUILD
-          <span class="button_tally">1</span>
+          <span class="button_tally">2</span>
         </a>
         
         
@@ -275,7 +282,7 @@
         
         <a href='https://peterliao96.github.io/zh-cn/series/crd-build/' class="post_tag button button_translucent" title="crd-build">
           CRD-BUILD
-          <span class="button_tally">1</span>
+          <span class="button_tally">2</span>
         </a>
         
         
@@ -296,6 +303,16 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
           KUBERNETES
+          <span class="button_tally">3</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class="post_tag button button_translucent" title="crd">
+          CRD
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class="post_tag button button_translucent" title="operator">
+          OPERATOR
           <span class="button_tally">2</span>
         </a>
         
@@ -306,11 +323,6 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/context/' class="post_tag button button_translucent" title="context">
           CONTEXT
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class="post_tag button button_translucent" title="crd">
-          CRD
           <span class="button_tally">1</span>
         </a>
         
@@ -326,11 +338,6 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/mutex/' class="post_tag button button_translucent" title="mutex">
           MUTEX
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class="post_tag button button_translucent" title="operator">
-          OPERATOR
           <span class="button_tally">1</span>
         </a>
         

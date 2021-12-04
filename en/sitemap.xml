@@ -110,7 +110,7 @@
                 />
   </url><url>
     <loc>https://peterliao96.github.io/tags/crd/</loc>
-    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -123,7 +123,7 @@
                 />
   </url><url>
     <loc>https://peterliao96.github.io/series/crd-build/</loc>
-    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -136,7 +136,7 @@
                 />
   </url><url>
     <loc>https://peterliao96.github.io/categories/crd-build/</loc>
-    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -149,7 +149,7 @@
                 />
   </url><url>
     <loc>https://peterliao96.github.io/categories/golang/</loc>
-    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -159,6 +159,45 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://peterliao96.github.io/categories/golang/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/post/k8s/crd/crdpart2/</loc>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart2/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/k8s/crd/crdpart2/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/operator/</loc>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/operator/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/tags/operator/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/series/</loc>
+    <lastmod>2020-12-17T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/series/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/series/"
                 />
   </url><url>
     <loc>https://peterliao96.github.io/post/k8s/crd/crdpart1/</loc>
@@ -172,32 +211,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://peterliao96.github.io/post/k8s/crd/crdpart1/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/tags/operator/</loc>
-    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/tags/operator/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/tags/operator/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/series/</loc>
-    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/series/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/series/"
                 />
   </url><url>
     <loc>https://peterliao96.github.io/about/</loc>

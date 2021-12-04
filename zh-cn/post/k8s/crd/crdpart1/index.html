@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn" data-figures="" class="page">
   <head>
-<title>Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架 | Hyper Container</title>
+<title>Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架 | Hyper Container</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,9 +23,9 @@
 <meta name="description" content="文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@1244240338Liao">
-<meta name="twitter:title" content="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架" />
+<meta name="twitter:title" content="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架" />
 <meta property="og:url" content="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/" />
-<meta property="og:title" content="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架" />
+<meta property="og:title" content="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架" />
 <meta property="og:description" content="文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod" />
 <meta property="og:image" content="https://peterliao96.github.io/images/k8s-3.jpeg" />
 
@@ -133,14 +133,14 @@
   
 <div class="grid-inverse wrap content">
   <article class="post_content">
-    <h1 class="post_title">Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD Operator 框架</h1>
+    <h1 class="post_title">Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架</h1>
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
 </svg></span>
     <span class="post_date">
       Dec 11, 2020</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes' title="kubernetes" class="post_tag button button_translucent">kubernetes
+    <span class="post_time"> · 3 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes' title="kubernetes" class="post_tag button button_translucent">kubernetes
         </a><a href='https://peterliao96.github.io/zh-cn/tags/crd' title="CRD" class="post_tag button button_translucent">CRD
         </a><a href='https://peterliao96.github.io/zh-cn/tags/operator' title="operator" class="post_tag button button_translucent">operator
         </a>
@@ -148,12 +148,12 @@
     <span class="page_only">&nbsp;·
   <div class="post_share">
     分享到:
-    <a href="https://twitter.com/intent/tweet?text=Kubernetes%20CRD%20%e6%8e%a7%e5%88%b6%e5%99%a8%e5%bc%80%e5%8f%91%e7%b3%bb%e5%88%97%20Part%201%3a%20%e5%88%9d%e8%af%86%20CRD%20Operator%20%e6%a1%86%e6%9e%b6&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fcrd%2fcrdpart1%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
+    <a href="https://twitter.com/intent/tweet?text=Kubernetes%20CRD%20%e6%8e%a7%e5%88%b6%e5%99%a8%e5%bc%80%e5%8f%91%e7%b3%bb%e5%88%97%20Part%201%3a%20%e5%88%9d%e8%af%86%20CRD%20%e5%92%8c%20Operator%20%e6%a1%86%e6%9e%b6&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fcrd%2fcrdpart1%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#twitter"></use>
 </svg>
     </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fcrd%2fcrdpart1%2f&t=Kubernetes%20CRD%20%e6%8e%a7%e5%88%b6%e5%99%a8%e5%bc%80%e5%8f%91%e7%b3%bb%e5%88%97%20Part%201%3a%20%e5%88%9d%e8%af%86%20CRD%20Operator%20%e6%a1%86%e6%9e%b6" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fcrd%2fcrdpart1%2f&t=Kubernetes%20CRD%20%e6%8e%a7%e5%88%b6%e5%99%a8%e5%bc%80%e5%8f%91%e7%b3%bb%e5%88%97%20Part%201%3a%20%e5%88%9d%e8%af%86%20CRD%20%e5%92%8c%20Operator%20%e6%a1%86%e6%9e%b6" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#facebook"></use>
 </svg>
@@ -173,7 +173,138 @@
   </div>
 
     
-    <p>文章介绍了关于 CRD controller 开发的目的、框架以及开源 <code>client-go</code> 的 <code>kubebuilder</code> 脚手架的简单使用。</p>
+    <p>文章介绍了关于 CRD controller 开发的目的、框架以及开源 <code>kubebuilder</code> 脚手架的简单使用。</p>
+<h2 id="1custom-resource-define">1.Custom Resource Define</h2>
+<p><code>Custom Resource Define</code> 简称 CRD，是 Kubernetes（v1.7+）为提高可扩展性，让开发者去自定义资源的一种方式。CRD 资源可以动态注册到集群中，注册完毕后，用户可以通过 kubectl 来创建访问这个自定义的资源对象，类似于操作 Pod 一样。不过需要注意的是 CRD 仅仅是资源的定义而已，需要一个对应的控制器去监听 CRD 的各种事件来添加自定义的业务逻辑。</p>
+<h2 id="2yaml-文件格式">2.YAML 文件格式</h2>
+<p>我们可以定义一个如下所示的 CRD 资源清单文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="ln"> 1</span><span class="c"># crd-demo.yaml</span><span class="w">
+</span><span class="ln"> 2</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apiextensions.k8s.io/v1</span><span class="w">
+</span><span class="ln"> 3</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CustomResourceDefinition</span><span class="w">
+</span><span class="ln"> 4</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="ln"> 5</span><span class="w">  </span><span class="c"># name 必须匹配下面的spec字段：&lt;plural&gt;.&lt;group&gt;  </span><span class="w">
+</span><span class="ln"> 6</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">crontabs.stable.example.com</span><span class="w">
+</span><span class="ln"> 7</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="ln"> 8</span><span class="w">  </span><span class="c"># group 名用于 REST API 中的定义：/apis/&lt;group&gt;/&lt;version&gt;  </span><span class="w">
+</span><span class="ln"> 9</span><span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l">stable.example.com</span><span class="w">
+</span><span class="ln">10</span><span class="w">  </span><span class="c"># 列出自定义资源的所有 API 版本  </span><span class="w">
+</span><span class="ln">11</span><span class="w">  </span><span class="nt">versions</span><span class="p">:</span><span class="w">
+</span><span class="ln">12</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">v1beta1 </span><span class="w"> </span><span class="c"># 版本名称，比如 v1、v2beta1 等等    </span><span class="w">
+</span><span class="ln">13</span><span class="w">    </span><span class="nt">served</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">  </span><span class="c"># 是否开启通过 REST APIs 访问 `/apis/&lt;group&gt;/&lt;version&gt;/...`    </span><span class="w">
+</span><span class="ln">14</span><span class="w">    </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># 必须将一个且只有一个版本标记为存储版本    </span><span class="w">
+</span><span class="ln">15</span><span class="w">    </span><span class="nt">schema</span><span class="p">:</span><span class="w">  </span><span class="c"># 定义自定义对象的声明规范      </span><span class="w">
+</span><span class="ln">16</span><span class="w">      </span><span class="nt">openAPIV3Schema</span><span class="p">:</span><span class="w">
+</span><span class="ln">17</span><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l">Define CronTab YAML Spec</span><span class="w">
+</span><span class="ln">18</span><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">object</span><span class="w">
+</span><span class="ln">19</span><span class="w">        </span><span class="nt">properties</span><span class="p">:</span><span class="w">
+</span><span class="ln">20</span><span class="w">          </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="ln">21</span><span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">object</span><span class="w">
+</span><span class="ln">22</span><span class="w">            </span><span class="nt">properties</span><span class="p">:</span><span class="w">
+</span><span class="ln">23</span><span class="w">              </span><span class="nt">cronSpec</span><span class="p">:</span><span class="w">
+</span><span class="ln">24</span><span class="w">                </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">string</span><span class="w">
+</span><span class="ln">25</span><span class="w">              </span><span class="nt">image</span><span class="p">:</span><span class="w">
+</span><span class="ln">26</span><span class="w">                </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">string</span><span class="w">
+</span><span class="ln">27</span><span class="w">              </span><span class="nt">replicas</span><span class="p">:</span><span class="w">
+</span><span class="ln">28</span><span class="w">                </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">integer</span><span class="w">
+</span><span class="ln">29</span><span class="w">  </span><span class="c"># 定义作用范围：Namespaced（命名空间级别）或者 Cluster（整个集群）  </span><span class="w">
+</span><span class="ln">30</span><span class="w">  </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="l">Namespaced</span><span class="w">
+</span><span class="ln">31</span><span class="w">  </span><span class="nt">names</span><span class="p">:</span><span class="w">
+</span><span class="ln">32</span><span class="w">    </span><span class="c"># kind 是 singular 的一个驼峰形式定义，在资源清单中会使用    </span><span class="w">
+</span><span class="ln">33</span><span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CronTab</span><span class="w">
+</span><span class="ln">34</span><span class="w">    </span><span class="c"># plural 名字用于 REST API 中的定义：/apis/&lt;group&gt;/&lt;version&gt;/&lt;plural&gt;    </span><span class="w">
+</span><span class="ln">35</span><span class="w">    </span><span class="nt">plural</span><span class="p">:</span><span class="w"> </span><span class="l">crontabs</span><span class="w">
+</span><span class="ln">36</span><span class="w">    </span><span class="c"># singular 名称用于 CLI 操作或显示的一个别名    </span><span class="w">
+</span><span class="ln">37</span><span class="w">    </span><span class="nt">singular</span><span class="p">:</span><span class="w"> </span><span class="l">crontab</span><span class="w">
+</span><span class="ln">38</span><span class="w">    </span><span class="c"># shortNames 相当于缩写形式    </span><span class="w">
+</span><span class="ln">39</span><span class="w">    </span><span class="nt">shortNames</span><span class="p">:</span><span class="w">
+</span><span class="ln">40</span><span class="w">    </span>- <span class="l">ct</span><span class="w">
+</span></code></pre></div><p>我们在创建资源的时候，肯定不是任由我们随意去编写 YAML 文件的，当我们把上面的 CRD 文件提交给 Kubernetes 之后，Kubernetes 会对我们提交的声明文件进行校验，从定义可以看出 CRD 是基于 <a href="https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#schemaObject">OpenAPI v3 schem</a> 进行规范的。</p>
+<p>使用 <code>kubectl</code> 来创建这个 CRD 资源清单：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="ln">1</span><span class="o">[</span>root@master ~<span class="o">]</span><span class="c1"># kubectl apply -f crd-demo.yaml</span>
+<span class="ln">2</span>customresourcedefinition.apiextensions.k8s.io/crontabs.stable.example.com created
+</code></pre></div><p>然后我们就可以使用这个 API 端点来创建和管理自定义的对象，这些对象的类型就是上面创建的 CRD 对象规范中的 <code>CronTab</code>。
+现在在 Kubernetes 集群中我们就多了一种新的资源叫 <code>crontabs.stable.example.com</code>，我们就可以使用它来定义一个 <code>CronTab</code> 资源对象了，这个自定义资源对象里面可以包含的字段我们在定义的时候通过 <code>schema</code> 进行了规范，比如现在我们来创建一个如下所示的资源清单：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="ln">1</span><span class="c"># crd-crontab-demo.yaml</span><span class="w">
+</span><span class="ln">2</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;stable.example.com/v1beta1&#34;</span><span class="w">
+</span><span class="ln">3</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CronTab</span><span class="w">
+</span><span class="ln">4</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="ln">5</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-cron-object</span><span class="w">
+</span><span class="ln">6</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="ln">7</span><span class="w">  </span><span class="nt">cronSpec</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;* * * * */5&#34;</span><span class="w">
+</span><span class="ln">8</span><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">my-awesome-cron-image</span><span class="w">
+</span></code></pre></div><p>直接创建这个对象：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span><span class="o">[</span>root@master ~<span class="o">]</span><span class="c1"># kubectl apply -f crd-crontab-demo.yaml</span>
+<span class="ln">2</span>crontab.stable.example.com/my-new-cron-object created
+</code></pre></div><p>我们就可以用 <code>kubectl</code> 来管理我们这里创建 <code>CronTab</code> 对象了，比如：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span><span class="o">[</span>root@master ~<span class="o">]</span><span class="c1"># kubectl get ct  # 简写</span>
+<span class="ln">2</span>NAME                 AGE
+<span class="ln">3</span>my-new-cron-object   42s
+<span class="ln">4</span><span class="o">[</span>root@master ~<span class="o">]</span><span class="c1"># kubectl get crontab</span>
+<span class="ln">5</span>NAME                 AGE
+<span class="ln">6</span>my-new-cron-object   88s
+</code></pre></div><h2 id="3kubebuilder-脚手架使用">3.kubebuilder 脚手架使用</h2>
+<p>创建一个目录，然后在里面运行 <code>kubebuilder init</code> 命令，初始化一个新项目。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="ln">1</span>$ <span class="nb">cd</span> go/src/github.com/peterliao96
+<span class="ln">2</span>$ mkdir builder-demo
+<span class="ln">3</span>$ <span class="nb">cd</span> builder-demo
+<span class="ln">4</span><span class="c1"># 开启 go modules</span>
+<span class="ln">5</span>$ <span class="nb">export</span> <span class="nv">GO111MODULE</span><span class="o">=</span>on
+<span class="ln">6</span>$ <span class="nb">export</span> <span class="nv">GOPROXY</span><span class="o">=</span>https://goproxy.cn
+<span class="ln">7</span>$ kubebuilder init --domain ydzs.io --owner peterliao96 --repo github.com/peterliao96/builder-demo
+<span class="ln">8</span><span class="c1"># 创建一个新的 API（组/版本）为 “webapp/v1”，并在上面创建新的 Kind(CRD) “Guestbook”</span>
+<span class="ln">9</span>$ kubebuilder create api --group webapp --version v1 --kind Guestbook
+</code></pre></div><p>上面的命令会创建文件 <code>api/v1/guestbook_types.go</code>，该文件中定义相关 API ，而针对于这一类型 (CRD) 的业务逻辑生成在 <code>controller/guestbook_controller.go</code> 文件中。
+我们可以根据自己的需求去修改资源对象的定义结构，修改 <code>api/v1/guestbook_types.go</code> 文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="c1">// api/v1/guestbook_types.go
+</span><span class="ln"> 2</span><span class="c1"></span><span class="kn">package</span> <span class="nx">v1</span>
+<span class="ln"> 3</span>
+<span class="ln"> 4</span><span class="kn">import</span> <span class="p">(</span>
+<span class="ln"> 5</span>	<span class="nx">metav1</span> <span class="s">&#34;k8s.io/apimachinery/pkg/apis/meta/v1&#34;</span>
+<span class="ln"> 6</span><span class="p">)</span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span><span class="c1">// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
+</span><span class="ln"> 9</span><span class="c1">// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+</span><span class="ln">10</span><span class="c1"></span>
+<span class="ln">11</span><span class="c1">// GuestbookSpec defines the desired state of Guestbook
+</span><span class="ln">12</span><span class="c1"></span><span class="kd">type</span> <span class="nx">GuestbookSpec</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln">13</span>	<span class="c1">// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+</span><span class="ln">14</span><span class="c1"></span>	<span class="c1">// Important: Run &#34;make&#34; to regenerate code after modifying this file
+</span><span class="ln">15</span><span class="c1"></span>
+<span class="ln">16</span>	<span class="c1">// Foo is an example field of Guestbook. Edit guestbook_types.go to remove/update
+</span><span class="ln">17</span><span class="c1"></span>	<span class="nx">Foo</span> <span class="kt">string</span> <span class="s">`json:&#34;foo,omitempty&#34;`</span>
+<span class="ln">18</span><span class="p">}</span>
+<span class="ln">19</span>
+<span class="ln">20</span><span class="c1">// GuestbookStatus defines the observed state of Guestbook
+</span><span class="ln">21</span><span class="c1"></span><span class="kd">type</span> <span class="nx">GuestbookStatus</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln">22</span>	<span class="c1">// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+</span><span class="ln">23</span><span class="c1"></span>	<span class="c1">// Important: Run &#34;make&#34; to regenerate code after modifying this file
+</span><span class="ln">24</span><span class="c1"></span><span class="p">}</span>
+<span class="ln">25</span>
+<span class="ln">26</span><span class="c1">//+kubebuilder:object:root=true
+</span><span class="ln">27</span><span class="c1">//+kubebuilder:subresource:status
+</span><span class="ln">28</span><span class="c1"></span>
+<span class="ln">29</span><span class="c1">// Guestbook is the Schema for the guestbooks API
+</span><span class="ln">30</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Guestbook</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln">31</span>	<span class="nx">metav1</span><span class="p">.</span><span class="nx">TypeMeta</span>   <span class="s">`json:&#34;,inline&#34;`</span>
+<span class="ln">32</span>	<span class="nx">metav1</span><span class="p">.</span><span class="nx">ObjectMeta</span> <span class="s">`json:&#34;metadata,omitempty&#34;`</span>
+<span class="ln">33</span>
+<span class="ln">34</span>	<span class="nx">Spec</span>   <span class="nx">GuestbookSpec</span>   <span class="s">`json:&#34;spec,omitempty&#34;`</span>
+<span class="ln">35</span>	<span class="nx">Status</span> <span class="nx">GuestbookStatus</span> <span class="s">`json:&#34;status,omitempty&#34;`</span>
+<span class="ln">36</span><span class="p">}</span>
+<span class="ln">37</span>
+<span class="ln">38</span><span class="c1">//+kubebuilder:object:root=true
+</span><span class="ln">39</span><span class="c1"></span>
+<span class="ln">40</span><span class="c1">// GuestbookList contains a list of Guestbook
+</span><span class="ln">41</span><span class="c1"></span><span class="kd">type</span> <span class="nx">GuestbookList</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="ln">42</span>	<span class="nx">metav1</span><span class="p">.</span><span class="nx">TypeMeta</span> <span class="s">`json:&#34;,inline&#34;`</span>
+<span class="ln">43</span>	<span class="nx">metav1</span><span class="p">.</span><span class="nx">ListMeta</span> <span class="s">`json:&#34;metadata,omitempty&#34;`</span>
+<span class="ln">44</span>	<span class="nx">Items</span>           <span class="p">[]</span><span class="nx">Guestbook</span> <span class="s">`json:&#34;items&#34;`</span>
+<span class="ln">45</span><span class="p">}</span>
+<span class="ln">46</span>
+<span class="ln">47</span><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+<span class="ln">48</span>	<span class="nx">SchemeBuilder</span><span class="p">.</span><span class="nf">Register</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Guestbook</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">GuestbookList</span><span class="p">{})</span>
+<span class="ln">49</span><span class="p">}</span>
+</code></pre></div>
 
 <h3>翻译:</h3>
 <ul>
@@ -207,10 +338,10 @@
         <a href="https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/" class="nav-link" title="关于k8s的 ingress 的工作流程">关于k8s的 ingress 的工作流程</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golang/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart2/" class="nav-link" title="Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理">Kubernetes CRD 控制器开发系列 Part 2: CRD controller 实现原理</a>
       </li>
       <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golang/golangpart7/" class="nav-link" title="Golang 基础 Part 7: Defer, Panic and Recover">Golang 基础 Part 7: Defer, Panic and Recover</a>
+        <a href="https://peterliao96.github.io/zh-cn/post/golang/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
       </li>
     </ul>
     <div>
@@ -218,17 +349,17 @@
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/categories/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">9</span>
+          <span class="button_tally">10</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
           KUBERNETES
-          <span class="button_tally">2</span>
+          <span class="button_tally">3</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/categories/crd-build/' class="post_tag button button_translucent" title="crd-build">
           CRD-BUILD
-          <span class="button_tally">1</span>
+          <span class="button_tally">2</span>
         </a>
         
         
@@ -244,7 +375,7 @@
         
         <a href='https://peterliao96.github.io/zh-cn/series/crd-build/' class="post_tag button button_translucent" title="crd-build">
           CRD-BUILD
-          <span class="button_tally">1</span>
+          <span class="button_tally">2</span>
         </a>
         
         
@@ -265,6 +396,16 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes/' class="post_tag button button_translucent" title="kubernetes">
           KUBERNETES
+          <span class="button_tally">3</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class="post_tag button button_translucent" title="crd">
+          CRD
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class="post_tag button button_translucent" title="operator">
+          OPERATOR
           <span class="button_tally">2</span>
         </a>
         
@@ -275,11 +416,6 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/context/' class="post_tag button button_translucent" title="context">
           CONTEXT
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class="post_tag button button_translucent" title="crd">
-          CRD
           <span class="button_tally">1</span>
         </a>
         
@@ -295,11 +431,6 @@
         
         <a href='https://peterliao96.github.io/zh-cn/tags/mutex/' class="post_tag button button_translucent" title="mutex">
           MUTEX
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class="post_tag button button_translucent" title="operator">
-          OPERATOR
           <span class="button_tally">1</span>
         </a>
         
