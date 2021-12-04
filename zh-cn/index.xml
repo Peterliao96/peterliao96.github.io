@@ -44,6 +44,48 @@ Figure 1. Ingress 和 Ingress Controller
       <description>
         
           &lt;p&gt;文章主要讲解了关于 CRD controller 实现原理以及 &lt;code&gt;client-go&lt;/code&gt; 源码实现过程。&lt;/p&gt;
+&lt;p&gt;我们自定义的资源 CRD 创建完成以后，其实如果没有一个 controller 运行它的话，它并没有起到任何用处。于是，我们需要通过创建 controller 来运行 CRD。
+要想了解 controller 的实现原理和方式，我们就需要了解下 &lt;code&gt;client-go&lt;/code&gt; 这个库的实现，Kubernetes 部分代码也是基于这个库实现的，也包含了开发自定义控制器时可以使用的各种机制。
+下图显示了 &lt;code&gt;client-go&lt;/code&gt; 中的各个组件是如何公众的以及与我们要编写的自定义控制器代码的交互入口：&lt;/p&gt;
+&lt;center&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/client-go-controller-interaction.jpeg&#34; width=600px height=400px&gt;
+&lt;/image&gt;
+&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 1.client-go 实现流程图
+&lt;/center&gt;
+&lt;p&gt;&lt;code&gt;client-go&lt;/code&gt; 组件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Reflector&lt;/code&gt;：通过 Kubernetes API 监控 Kubernetes 的资源类型 采用 List/Watch 机制, 可以 Watch 任何资源包括 CRD 添加 object 对象到 FIFO 队列，然后 Informer 会从队列里面取数据&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Informer&lt;/code&gt;：controller 机制的基础，循环处理 object 对象 从 Reflector 取出数据，然后将数据给到 Indexer 去缓存，提供对象事件的 &lt;code&gt;handler&lt;/code&gt; 接口，只要给 Informer 添加 &lt;code&gt;ResourceEventHandler&lt;/code&gt; 实例的回调函数，去实现 &lt;code&gt;OnAdd(obj interface{})&lt;/code&gt;、 &lt;code&gt;OnUpdate(oldObj, newObj interface{})&lt;/code&gt; 和 &lt;code&gt;OnDelete(obj interface{})&lt;/code&gt; 这三个方法，就可以处理好资源的创建、更新和删除操作了。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Indexer&lt;/code&gt;：提供 object 对象的索引，是线程安全的，缓存对象信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;controller&lt;/code&gt; 组件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Informer reference&lt;/code&gt;: controller 需要创建合适的 Informer 才能通过 Informer reference 操作资源对象&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Indexer reference&lt;/code&gt;: controller 创建 Indexer reference 然后去利用索引做相关处理&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Resource Event Handlers&lt;/code&gt;：Informer 会回调这些 handlers&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Work queue&lt;/code&gt;: Resource Event Handlers 被回调后将 key 写到工作队列，这里的 key 相当于事件通知，后面根据取出事件后，做后续的处理&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Process Item&lt;/code&gt;：从工作队列中取出 key 后进行后续处理，具体处理可以通过 Indexer reference controller 可以直接创建上述两个引用对象去处理，也可以采用工厂模式，官方都有相关示例&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;自定义 Controller 的控制流:&lt;/p&gt;
+&lt;center&gt;
+&lt;image src=&#34;https://peterliao96.github.io/images/client-go-controller-workflow.png&#34; width=600px height=300px&gt;
+&lt;/image&gt;
+&lt;/center&gt;
+&lt;center style=&#34;font-size:14px;color:#C0C0C0;text-decoration:underline&#34;&gt;
+Figure 2.controller 的控制流
+&lt;/center&gt;
+&lt;p&gt;如上图所示主要有两个部分，一个是发生在 &lt;code&gt;SharedIndexInformer&lt;/code&gt; 中，另外一个是在自定义控制器中。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Reflector&lt;/code&gt; 通过 Kubernetes APIServer 执行对象（比如 Pod）的 &lt;code&gt;ListAndWatch&lt;/code&gt; 查询，记录和对象相关的三种事件类型 &lt;code&gt;Added、Updated、Deleted&lt;/code&gt;，然后将它们传递到 &lt;code&gt;DeltaFIFO&lt;/code&gt; 中去。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DeltaFIFO&lt;/code&gt; 接收到事件和 &lt;code&gt;watch&lt;/code&gt; 事件对应的对象，然后将他们转换为 &lt;code&gt;Delta&lt;/code&gt; 对象，这些 &lt;code&gt;Delta&lt;/code&gt; 对象被附加到队列中去等待处理，对于已经删除的，会检查线程安全的 &lt;code&gt;store&lt;/code&gt; 中是否已经存在该文件，从而可以避免在不存在某些内容时排队执行删除操作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Cache&lt;/code&gt; 控制器（不要和自定义控制器混淆）调用 &lt;code&gt;Pop()&lt;/code&gt; 方法从 &lt;code&gt;DeltaFIFO&lt;/code&gt; 队列中出队列，&lt;code&gt;Delta&lt;/code&gt; 对象将传递到 &lt;code&gt;SharedIndexInformer&lt;/code&gt; 的 &lt;code&gt;HandleDelta()&lt;/code&gt; 方法中以进行进一步处理。&lt;/li&gt;
+&lt;li&gt;根据 &lt;code&gt;Delta&lt;/code&gt; 对象的操作（事件）类型，首先在 &lt;code&gt;HandleDeltas&lt;/code&gt; 方法中通过 indexer 的方法将对对象保存到线程安全的 &lt;code&gt;Store&lt;/code&gt; 中，然后，通过 &lt;code&gt;SharedIndexInformer&lt;/code&gt; 中的 &lt;code&gt;sharedProcessor&lt;/code&gt; 的 &lt;code&gt;distribution()&lt;/code&gt; 方法将这些对象发送到事件 &lt;code&gt;handlers&lt;/code&gt;，这些事件处理器由自定义控制器通过 &lt;code&gt;SharedInformer&lt;/code&gt; 的方法比如 &lt;code&gt;AddEventHandlerWithResyncPeriod()&lt;/code&gt; 进行注册。&lt;/li&gt;
+&lt;li&gt;已注册的事件处理器通过添加或更新时间的 &lt;code&gt;MetaNamespaceKeyFunc()&lt;/code&gt; 或删除事件的 &lt;code&gt;DeletionHandingMetaNamespaceKeyFunc()&lt;/code&gt; 将对象转换为格式为 &lt;code&gt;namespace/name&lt;/code&gt; 或只是 &lt;code&gt;name&lt;/code&gt; 的 &lt;code&gt;key&lt;/code&gt;，然后将这个 &lt;code&gt;key&lt;/code&gt; 添加到自定义控制器的 &lt;code&gt;workqueue&lt;/code&gt; 中，&lt;code&gt;workqueues&lt;/code&gt; 的实现可以在 &lt;code&gt;util/workqueue&lt;/code&gt; 中找到。&lt;/li&gt;
+&lt;li&gt;自定义的控制器通过调用定义的 &lt;code&gt;handlers&lt;/code&gt; 处理器从 &lt;code&gt;workqueue&lt;/code&gt; 中 &lt;code&gt;pop&lt;/code&gt; 一个 &lt;code&gt;key&lt;/code&gt; 出来进行处理，&lt;code&gt;handlers&lt;/code&gt; 将调用 &lt;code&gt;indexer&lt;/code&gt; 的 &lt;code&gt;GetByKey()&lt;/code&gt; 从线程安全的 &lt;code&gt;store&lt;/code&gt; 中获取对象，我们的业务逻辑就是在这个 &lt;code&gt;handlers&lt;/code&gt; 里面实现。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文摘录于 Kubernetes 文档中的 &lt;a href=&#34;https://www.qikqiak.com/k3s/controller/crd/#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3&#34;&gt;CRD controller 原理实现&lt;/a&gt;。&lt;/p&gt;
         
       </description>
     </item>
@@ -187,7 +229,7 @@ Figure 1. Ingress 和 Ingress Controller
 &lt;span class=&#34;ln&#34;&gt;47&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;48&lt;/span&gt;	&lt;span class=&#34;nx&#34;&gt;SchemeBuilder&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Register&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Guestbook&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{},&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GuestbookList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{})&lt;/span&gt;
 &lt;span class=&#34;ln&#34;&gt;49&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;本文摘录于 Kubernetes 开发课文档中的 &lt;a href=&#34;https://www.notion.so/CRD-133b377c4b5e408ea2ede4d40bb31108&#34;&gt;CRD介绍&lt;/a&gt; 和 &lt;a href=&#34;https://www.notion.so/kubebuilder-3cbdc53796044a939a58eaaba67f415b&#34;&gt;kubebuilder 介绍&lt;/a&gt;。&lt;/p&gt;
         
       </description>
     </item>

@@ -140,7 +140,7 @@
 </svg></span>
     <span class="post_date">
       Dec 17, 2020</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes' title="kubernetes" class="post_tag button button_translucent">kubernetes
+    <span class="post_time"> · 2 min read</span><span>&nbsp;· <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes' title="kubernetes" class="post_tag button button_translucent">kubernetes
         </a><a href='https://peterliao96.github.io/zh-cn/tags/crd' title="CRD" class="post_tag button button_translucent">CRD
         </a><a href='https://peterliao96.github.io/zh-cn/tags/operator' title="operator" class="post_tag button button_translucent">operator
         </a>
@@ -174,6 +174,48 @@
 
     
     <p>文章主要讲解了关于 CRD controller 实现原理以及 <code>client-go</code> 源码实现过程。</p>
+<p>我们自定义的资源 CRD 创建完成以后，其实如果没有一个 controller 运行它的话，它并没有起到任何用处。于是，我们需要通过创建 controller 来运行 CRD。
+要想了解 controller 的实现原理和方式，我们就需要了解下 <code>client-go</code> 这个库的实现，Kubernetes 部分代码也是基于这个库实现的，也包含了开发自定义控制器时可以使用的各种机制。
+下图显示了 <code>client-go</code> 中的各个组件是如何公众的以及与我们要编写的自定义控制器代码的交互入口：</p>
+<center>
+<image src="/images/client-go-controller-interaction.jpeg" width=600px height=400px>
+</image>
+</center>
+<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
+Figure 1.client-go 实现流程图
+</center>
+<p><code>client-go</code> 组件：</p>
+<ul>
+<li><code>Reflector</code>：通过 Kubernetes API 监控 Kubernetes 的资源类型 采用 List/Watch 机制, 可以 Watch 任何资源包括 CRD 添加 object 对象到 FIFO 队列，然后 Informer 会从队列里面取数据</li>
+<li><code>Informer</code>：controller 机制的基础，循环处理 object 对象 从 Reflector 取出数据，然后将数据给到 Indexer 去缓存，提供对象事件的 <code>handler</code> 接口，只要给 Informer 添加 <code>ResourceEventHandler</code> 实例的回调函数，去实现 <code>OnAdd(obj interface{})</code>、 <code>OnUpdate(oldObj, newObj interface{})</code> 和 <code>OnDelete(obj interface{})</code> 这三个方法，就可以处理好资源的创建、更新和删除操作了。</li>
+<li><code>Indexer</code>：提供 object 对象的索引，是线程安全的，缓存对象信息</li>
+</ul>
+<p><code>controller</code> 组件：</p>
+<ul>
+<li><code>Informer reference</code>: controller 需要创建合适的 Informer 才能通过 Informer reference 操作资源对象</li>
+<li><code>Indexer reference</code>: controller 创建 Indexer reference 然后去利用索引做相关处理</li>
+<li><code>Resource Event Handlers</code>：Informer 会回调这些 handlers</li>
+<li><code>Work queue</code>: Resource Event Handlers 被回调后将 key 写到工作队列，这里的 key 相当于事件通知，后面根据取出事件后，做后续的处理</li>
+<li><code>Process Item</code>：从工作队列中取出 key 后进行后续处理，具体处理可以通过 Indexer reference controller 可以直接创建上述两个引用对象去处理，也可以采用工厂模式，官方都有相关示例</li>
+</ul>
+<p>自定义 Controller 的控制流:</p>
+<center>
+<image src="/images/client-go-controller-workflow.png" width=600px height=300px>
+</image>
+</center>
+<center style="font-size:14px;color:#C0C0C0;text-decoration:underline">
+Figure 2.controller 的控制流
+</center>
+<p>如上图所示主要有两个部分，一个是发生在 <code>SharedIndexInformer</code> 中，另外一个是在自定义控制器中。</p>
+<ul>
+<li><code>Reflector</code> 通过 Kubernetes APIServer 执行对象（比如 Pod）的 <code>ListAndWatch</code> 查询，记录和对象相关的三种事件类型 <code>Added、Updated、Deleted</code>，然后将它们传递到 <code>DeltaFIFO</code> 中去。</li>
+<li><code>DeltaFIFO</code> 接收到事件和 <code>watch</code> 事件对应的对象，然后将他们转换为 <code>Delta</code> 对象，这些 <code>Delta</code> 对象被附加到队列中去等待处理，对于已经删除的，会检查线程安全的 <code>store</code> 中是否已经存在该文件，从而可以避免在不存在某些内容时排队执行删除操作。</li>
+<li><code>Cache</code> 控制器（不要和自定义控制器混淆）调用 <code>Pop()</code> 方法从 <code>DeltaFIFO</code> 队列中出队列，<code>Delta</code> 对象将传递到 <code>SharedIndexInformer</code> 的 <code>HandleDelta()</code> 方法中以进行进一步处理。</li>
+<li>根据 <code>Delta</code> 对象的操作（事件）类型，首先在 <code>HandleDeltas</code> 方法中通过 indexer 的方法将对对象保存到线程安全的 <code>Store</code> 中，然后，通过 <code>SharedIndexInformer</code> 中的 <code>sharedProcessor</code> 的 <code>distribution()</code> 方法将这些对象发送到事件 <code>handlers</code>，这些事件处理器由自定义控制器通过 <code>SharedInformer</code> 的方法比如 <code>AddEventHandlerWithResyncPeriod()</code> 进行注册。</li>
+<li>已注册的事件处理器通过添加或更新时间的 <code>MetaNamespaceKeyFunc()</code> 或删除事件的 <code>DeletionHandingMetaNamespaceKeyFunc()</code> 将对象转换为格式为 <code>namespace/name</code> 或只是 <code>name</code> 的 <code>key</code>，然后将这个 <code>key</code> 添加到自定义控制器的 <code>workqueue</code> 中，<code>workqueues</code> 的实现可以在 <code>util/workqueue</code> 中找到。</li>
+<li>自定义的控制器通过调用定义的 <code>handlers</code> 处理器从 <code>workqueue</code> 中 <code>pop</code> 一个 <code>key</code> 出来进行处理，<code>handlers</code> 将调用 <code>indexer</code> 的 <code>GetByKey()</code> 从线程安全的 <code>store</code> 中获取对象，我们的业务逻辑就是在这个 <code>handlers</code> 里面实现。</li>
+</ul>
+<p>本文摘录于 Kubernetes 文档中的 <a href="https://www.qikqiak.com/k3s/controller/crd/#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3">CRD controller 原理实现</a>。</p>
 
 <h3>翻译:</h3>
 <ul>
