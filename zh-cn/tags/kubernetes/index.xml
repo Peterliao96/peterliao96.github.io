@@ -9,7 +9,7 @@
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
     <lastBuildDate>Fri, 11 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>关于k8s的 ingress 的工作流程</title>
+      <title>Kubernetes 网络: 关于k8s的 ingress 的工作流程</title>
       <link>https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/</link>
       <pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate>
       
@@ -17,6 +17,7 @@
       <description>
         
           &lt;p&gt;文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及 nginx 配置修改后如何实现动态更新 nginx pod。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
 &lt;h2 id=&#34;ingress-和-ingress-controller&#34;&gt;Ingress 和 Ingress-Controller&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Ingress: 指的是k8s中的一个 api 对象，一般用 yaml 配置。作用是定义请求如何转发到 service 的规则，可以理解为配置模板。&lt;/li&gt;
@@ -44,6 +45,7 @@ Figure 1. Ingress 和 Ingress Controller
       <description>
         
           &lt;p&gt;文章主要讲解了关于 CRD controller 实现原理以及 &lt;code&gt;client-go&lt;/code&gt; 源码实现过程。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
 &lt;p&gt;我们自定义的资源 CRD 创建完成以后，其实如果没有一个 controller 运行它的话，它并没有起到任何用处。于是，我们需要通过创建 controller 来运行 CRD。
 要想了解 controller 的实现原理和方式，我们就需要了解下 &lt;code&gt;client-go&lt;/code&gt; 这个库的实现，Kubernetes 部分代码也是基于这个库实现的，也包含了开发自定义控制器时可以使用的各种机制。
 下图显示了 &lt;code&gt;client-go&lt;/code&gt; 中的各个组件是如何公众的以及与我们要编写的自定义控制器代码的交互入口：&lt;/p&gt;
@@ -99,6 +101,7 @@ Figure 2.controller 的控制流
       <description>
         
           &lt;p&gt;文章介绍了关于 CRD controller 开发的目的、框架以及开源 &lt;code&gt;kubebuilder&lt;/code&gt; 脚手架的简单使用。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
 &lt;h2 id=&#34;1custom-resource-define&#34;&gt;1.Custom Resource Define&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;Custom Resource Define&lt;/code&gt; 简称 CRD，是 Kubernetes（v1.7+）为提高可扩展性，让开发者去自定义资源的一种方式。CRD 资源可以动态注册到集群中，注册完毕后，用户可以通过 kubectl 来创建访问这个自定义的资源对象，类似于操作 Pod 一样。不过需要注意的是 CRD 仅仅是资源的定义而已，需要一个对应的控制器去监听 CRD 的各种事件来添加自定义的业务逻辑。&lt;/p&gt;
 &lt;h2 id=&#34;2yaml-文件格式&#34;&gt;2.YAML 文件格式&lt;/h2&gt;

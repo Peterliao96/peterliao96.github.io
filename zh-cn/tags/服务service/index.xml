@@ -9,7 +9,7 @@
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
     <lastBuildDate>Fri, 11 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/tags/%E6%9C%8D%E5%8A%A1service/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>关于k8s的 ingress 的工作流程</title>
+      <title>Kubernetes 网络: 关于k8s的 ingress 的工作流程</title>
       <link>https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/</link>
       <pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate>
       
@@ -17,6 +17,7 @@
       <description>
         
           &lt;p&gt;文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及 nginx 配置修改后如何实现动态更新 nginx pod。&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
 &lt;h2 id=&#34;ingress-和-ingress-controller&#34;&gt;Ingress 和 Ingress-Controller&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Ingress: 指的是k8s中的一个 api 对象，一般用 yaml 配置。作用是定义请求如何转发到 service 的规则，可以理解为配置模板。&lt;/li&gt;

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn" data-figures="" class="page">
   <head>
-<title>关于k8s的 ingress 的工作流程 | Hyper Container</title>
+<title>Kubernetes 网络: 关于k8s的 ingress 的工作流程 | Hyper Container</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,9 +23,9 @@
 <meta name="description" content="文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@1244240338Liao">
-<meta name="twitter:title" content="关于k8s的 ingress 的工作流程" />
+<meta name="twitter:title" content="Kubernetes 网络: 关于k8s的 ingress 的工作流程" />
 <meta property="og:url" content="https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/" />
-<meta property="og:title" content="关于k8s的 ingress 的工作流程" />
+<meta property="og:title" content="Kubernetes 网络: 关于k8s的 ingress 的工作流程" />
 <meta property="og:description" content="文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及nginx配置修改后如何实现动态更新nginx pod" />
 <meta property="og:image" content="https://peterliao96.github.io/images/k8s-1.jpeg" />
 
@@ -72,7 +72,13 @@
         
 
   <div class="nav_parent">
-    <a href="https://peterliao96.github.io/zh-cn/" class="nav_item" title="首页">首页 </a>
+    <a href="https://peterliao96.github.io/zh-cn/" class="nav_item" title="Kubernetes">Kubernetes </a>
+  </div>
+  <div class="nav_parent">
+    <a href="https://peterliao96.github.io/zh-cn/golang" class="nav_item" title="golang">golang </a>
+  </div>
+  <div class="nav_parent">
+    <a href="https://peterliao96.github.io/zh-cn/algorithms" class="nav_item" title="算法">算法 </a>
   </div>
   <div class="nav_parent">
     <a href="https://peterliao96.github.io/zh-cn/" class="nav_item" title="联系方式">联系方式 <img src='https://peterliao96.github.io/icons/caret-icon.svg' alt="icon" class="nav_icon"></a>
@@ -133,7 +139,7 @@
   
 <div class="grid-inverse wrap content">
   <article class="post_content">
-    <h1 class="post_title">关于k8s的 ingress 的工作流程</h1>
+    <h1 class="post_title">Kubernetes 网络: 关于k8s的 ingress 的工作流程</h1>
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
@@ -148,12 +154,12 @@
     <span class="page_only">&nbsp;·
   <div class="post_share">
     分享到:
-    <a href="https://twitter.com/intent/tweet?text=%e5%85%b3%e4%ba%8ek8s%e7%9a%84%20ingress%20%e7%9a%84%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fnetwork%2fingress%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
+    <a href="https://twitter.com/intent/tweet?text=Kubernetes%20%e7%bd%91%e7%bb%9c%3a%20%e5%85%b3%e4%ba%8ek8s%e7%9a%84%20ingress%20%e7%9a%84%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b&url=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fnetwork%2fingress%2f&tw_p=tweetbutton" class="twitter" title="分享到 Twitter" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#twitter"></use>
 </svg>
     </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fnetwork%2fingress%2f&t=%e5%85%b3%e4%ba%8ek8s%e7%9a%84%20ingress%20%e7%9a%84%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fpeterliao96.github.io%2fzh-cn%2fpost%2fk8s%2fnetwork%2fingress%2f&t=Kubernetes%20%e7%bd%91%e7%bb%9c%3a%20%e5%85%b3%e4%ba%8ek8s%e7%9a%84%20ingress%20%e7%9a%84%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b" class="facebook" title="分享到 Facebook" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#facebook"></use>
 </svg>
@@ -174,6 +180,7 @@
 
     
     <p>文章讲解了关于 ingress 和 ingress-controller 在k8s中的工作流程以及 nginx 配置修改后如何实现动态更新 nginx pod。</p>
+<hr></hr>
 <h2 id="ingress-和-ingress-controller">Ingress 和 Ingress-Controller</h2>
 <ul>
 <li>Ingress: 指的是k8s中的一个 api 对象，一般用 yaml 配置。作用是定义请求如何转发到 service 的规则，可以理解为配置模板。</li>
@@ -217,9 +224,6 @@ Figure 1. Ingress 和 Ingress Controller
       <li>
         <a href="https://peterliao96.github.io/zh-cn/post/k8s/crd/crdpart1/" class="nav-link" title="Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架">Kubernetes CRD 控制器开发系列 Part 1: 初识 CRD 和 Operator 框架</a>
       </li>
-      <li>
-        <a href="https://peterliao96.github.io/zh-cn/post/golang/golangpart8/" class="nav-link" title="Golang 基础 Part 8: Interface">Golang 基础 Part 8: Interface</a>
-      </li>
     </ul>
     <div>
       <h2 class="mt-4 taxonomy" id="categories-section">分类</h2>
@@ -234,8 +238,13 @@ Figure 1. Ingress 和 Ingress Controller
           <span class="button_tally">3</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/categories/crd-build/' class="post_tag button button_translucent" title="crd-build">
-          CRD-BUILD
+        <a href='https://peterliao96.github.io/zh-cn/categories/crd/' class="post_tag button button_translucent" title="crd">
+          CRD
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/categories/%E7%AE%97%E6%B3%95/' class="post_tag button button_translucent" title="算法">
+          算法
           <span class="button_tally">2</span>
         </a>
         
@@ -250,8 +259,13 @@ Figure 1. Ingress 和 Ingress Controller
           <span class="button_tally">8</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/series/crd-build/' class="post_tag button button_translucent" title="crd-build">
-          CRD-BUILD
+        <a href='https://peterliao96.github.io/zh-cn/series/crd/' class="post_tag button button_translucent" title="crd">
+          CRD
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/series/%E4%BA%8C%E5%88%86%E6%B3%95/' class="post_tag button button_translucent" title="二分法">
+          二分法
           <span class="button_tally">2</span>
         </a>
         
@@ -263,7 +277,7 @@ Figure 1. Ingress 和 Ingress Controller
       <nav class="tags_nav">
         <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class="post_tag button button_translucent" title="golang">
           GOLANG
-          <span class="button_tally">8</span>
+          <span class="button_tally">10</span>
         </a>
         
         <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class="post_tag button button_translucent" title="goroutine">
@@ -283,6 +297,16 @@ Figure 1. Ingress 和 Ingress Controller
         
         <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class="post_tag button button_translucent" title="operator">
           OPERATOR
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/%E4%BA%8C%E5%88%86%E6%B3%95/' class="post_tag button button_translucent" title="二分法">
+          二分法
+          <span class="button_tally">2</span>
+        </a>
+        
+        <a href='https://peterliao96.github.io/zh-cn/tags/%E6%95%B0%E7%BB%84/' class="post_tag button button_translucent" title="数组">
+          数组
           <span class="button_tally">2</span>
         </a>
         
@@ -321,17 +345,78 @@ Figure 1. Ingress 和 Ingress Controller
           <span class="button_tally">1</span>
         </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/%E6%95%B0%E7%BB%84/' class="post_tag button button_translucent" title="数组">
-          数组
-          <span class="button_tally">1</span>
-        </a>
         
-        <a href='https://peterliao96.github.io/zh-cn/tags/%E6%9C%8D%E5%8A%A1service/' class="post_tag button button_translucent" title="服务service">
-          服务SERVICE
-          <span class="button_tally">1</span>
-        </a>
-        
-        
+        <br>
+        <div class="post_tags_toggle button">所有标签</div>
+        <div class="post_tags">
+          <div class="tags_list">
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/channel/' class=" post_tag button button_translucent" data-position=1 title="channel">CHANNEL<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/context/' class=" post_tag button button_translucent" data-position=1 title="context">CONTEXT<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/crd/' class=" post_tag button button_translucent" data-position=2 title="crd">CRD<span class="button_tally">2</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/golang/' class=" post_tag button button_translucent" data-position=10 title="golang">GOLANG<span class="button_tally">10</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/goroutine/' class=" post_tag button button_translucent" data-position=3 title="goroutine">GOROUTINE<span class="button_tally">3</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/ingress/' class=" post_tag button button_translucent" data-position=1 title="ingress">INGRESS<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/interface/' class=" post_tag button button_translucent" data-position=1 title="interface">INTERFACE<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/kubernetes/' class=" post_tag button button_translucent" data-position=3 title="kubernetes">KUBERNETES<span class="button_tally">3</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/mutex/' class=" post_tag button button_translucent" data-position=1 title="mutex">MUTEX<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/operator/' class=" post_tag button button_translucent" data-position=2 title="operator">OPERATOR<span class="button_tally">2</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/waitgroup/' class=" post_tag button button_translucent" data-position=1 title="waitgroup">WAITGROUP<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/%E4%BA%8C%E5%88%86%E6%B3%95/' class=" post_tag button button_translucent" data-position=2 title="二分法">二分法<span class="button_tally">2</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/%E5%88%87%E7%89%87/' class=" post_tag button button_translucent" data-position=1 title="切片">切片<span class="button_tally">1</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/%E6%95%B0%E7%BB%84/' class=" post_tag button button_translucent" data-position=2 title="数组">数组<span class="button_tally">2</span>
+            </a>
+            
+            
+            <a href='https://peterliao96.github.io/zh-cn/tags/%E6%9C%8D%E5%8A%A1service/' class=" post_tag button button_translucent" data-position=1 title="服务service">服务SERVICE<span class="button_tally">1</span>
+            </a>
+            
+            <div class="tags_sort"><span title="sort alphabetically">[A~Z]</span><span title="sort by count">[0~9]</span>
+            </div>
+            <span class="tags_hide"><svg class="icon">
+            <use xlink:href="#closeme"></use>
+          </svg></span>
+          </div>
+        </div>
       </nav>
     </div>
   </section>
@@ -409,6 +494,9 @@ Figure 1. Ingress 和 Ingress Controller
 </svg>
 
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 <footer class="footer">
   <div class="footer_inner wrap pale">
     <img src='https://peterliao96.github.io/icons/image3vector.svg' class="icon icon_2 transparent" alt="Hyper Container">

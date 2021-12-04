@@ -17,6 +17,7 @@
       <description>
         
           &lt;p&gt;The article explains the architecture of CRD controller and goes through the procedure that how to realize CRD controller with &lt;code&gt;client-go&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
         
       </description>
     </item>
@@ -30,6 +31,7 @@
       <description>
         
           &lt;p&gt;The article introduces the purpose of applying CRD controller into practice, its architecture and how to use the open source &lt;code&gt;kubebuilder&lt;/code&gt; to generate the boilertemplate project.&lt;/p&gt;
+&lt;hr&gt;&lt;/hr&gt;
         
       </description>
     </item>
