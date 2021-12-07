@@ -454,7 +454,7 @@
     <lastmod>2020-08-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://peterliao96.github.io/algorithms/</loc>
-    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+    <lastmod>2020-01-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -467,7 +467,39 @@
                 />
   </url><url>
     <loc>https://peterliao96.github.io/categories/algorithms/</loc>
-    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+    <lastmod>2020-01-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/tags/backtracking/</loc>
+    <lastmod>2020-01-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/series/backtracking/</loc>
+    <lastmod>2020-01-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/backtracking/leetcode_46/</loc>
+    <lastmod>2020-01-14T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/backtracking/leetcode_46/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/backtracking/leetcode_46/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/backtracking/leetcode_78/</loc>
+    <lastmod>2020-01-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/backtracking/leetcode_78/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/backtracking/leetcode_78/"
+                />
   </url><url>
     <loc>https://peterliao96.github.io/tags/binary/</loc>
     <lastmod>2020-01-07T00:00:00+00:00</lastmod>
@@ -503,5 +535,65 @@
   </url><url>
     <loc>https://peterliao96.github.io/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/binarysearch/leetcode_162/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/binarysearch/leetcode_162/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/binarysearch/leetcode_162/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/binarysearch/rotatearray/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/binarysearch/rotatearray/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/binarysearch/rotatearray/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/dp/leetcode_122/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/dp/leetcode_122/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/dp/leetcode_122/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/dp/leetcode_62/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/dp/leetcode_62/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/dp/leetcode_62/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/algorithms/tree/leetcode_236/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/algorithms/tree/leetcode_236/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/algorithms/tree/leetcode_236/"
+                />
   </url>
 </urlset>

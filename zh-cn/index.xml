@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright © 2021, HYPER CONTAINER; all rights reserved.</copyright>
-    <lastBuildDate>Fri, 11 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://peterliao96.github.io/zh-cn/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kubernetes 网络: 关于k8s的 ingress 的工作流程</title>
       <link>https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/</link>
