@@ -180,6 +180,39 @@
     
     <p>本文讲解了寻找峰值的最优算法以及背后的二分法思想。</p>
 <hr></hr>
+<p>峰值元素是指其值严格大于左右相邻值的元素。 给你一个整数数组 <code>nums</code>，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回任何一个峰值所在位置即可。</p>
+<p>你可以假设 <code>nums[-1] = nums[n] = -∞</code>。 你必须实现时间复杂度为 \(O(\log n)\) 的算法来解决此问题。</p>
+<p>示例1：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="ln">1</span>输入：nums = [1,2,3,1]
+<span class="ln">2</span>输出：2
+<span class="ln">3</span>解释：3 是峰值元素，你的函数应该返回其索引 2。
+</code></pre></div><p>示例2：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="ln">1</span>输入：nums = [1,2,1,3,5,6,4]
+<span class="ln">2</span>输出：1 或 5 
+<span class="ln">3</span>解释：你的函数可以返回索引 1，其峰值元素为 2；
+<span class="ln">4</span>     或者返回索引 5， 其峰值元素为 6。
+</code></pre></div><p>解法：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kn">package</span> <span class="nx">main</span>
+<span class="ln"> 2</span>
+<span class="ln"> 3</span><span class="kn">import</span> <span class="p">(</span>
+<span class="ln"> 4</span>  <span class="s">&#34;fmt&#34;</span>
+<span class="ln"> 5</span>  <span class="s">&#34;math&#34;</span>
+<span class="ln"> 6</span><span class="p">)</span>
+<span class="ln"> 7</span>
+<span class="ln"> 8</span><span class="kd">func</span> <span class="nf">findPeakElement</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span><span class="kt">int</span><span class="p">{</span>
+<span class="ln"> 9</span>  <span class="kd">var</span> <span class="nx">left</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="ln">10</span>  <span class="kd">var</span> <span class="nx">right</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+<span class="ln">11</span>  <span class="k">for</span> <span class="p">;</span> <span class="nx">left</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="p">{</span>
+<span class="ln">12</span>    <span class="kd">var</span> <span class="nx">mid</span> <span class="p">=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">math</span><span class="p">.</span><span class="nf">Floor</span><span class="p">(</span><span class="nb">float64</span><span class="p">(</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">right</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+<span class="ln">13</span>    <span class="k">if</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">mid</span><span class="p">]</span> <span class="p">&gt;</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]{</span>
+<span class="ln">14</span>      <span class="nx">right</span> <span class="p">=</span> <span class="nx">mid</span>
+<span class="ln">15</span>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="ln">16</span>      <span class="nx">left</span> <span class="p">=</span> <span class="nx">mid</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="ln">17</span>    <span class="p">}</span>
+<span class="ln">18</span>  <span class="p">}</span>
+<span class="ln">19</span>  <span class="k">return</span> <span class="nx">left</span>
+<span class="ln">20</span><span class="p">}</span>
+</code></pre></div>
 
 <h3>翻译:</h3>
 <ul>
