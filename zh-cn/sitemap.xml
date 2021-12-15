@@ -115,6 +115,61 @@
     <loc>https://peterliao96.github.io/zh-cn/categories/%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2021-12-06T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/tags/ckad/</loc>
+    <lastmod>2021-11-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/categories/kubernetes/</loc>
+    <lastmod>2021-11-29T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/categories/kubernetes/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/categories/kubernetes/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/tags/kubernetes/</loc>
+    <lastmod>2021-11-29T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/tags/kubernetes/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/tags/kubernetes/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/post/k8s/ckad/</loc>
+    <lastmod>2021-11-29T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/k8s/ckad/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/k8s/ckad/"
+                />
+  </url><url>
+    <loc>https://peterliao96.github.io/zh-cn/post/</loc>
+    <lastmod>2021-11-29T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/"
+                />
+  </url><url>
     <loc>https://peterliao96.github.io/zh-cn/tags/ingress/</loc>
     <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -128,32 +183,6 @@
                 href="https://peterliao96.github.io/zh-cn/tags/ingress/"
                 />
   </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/categories/kubernetes/</loc>
-    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/categories/kubernetes/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/categories/kubernetes/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/tags/kubernetes/</loc>
-    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/tags/kubernetes/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/tags/kubernetes/"
-                />
-  </url><url>
     <loc>https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/</loc>
     <lastmod>2021-06-11T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -165,19 +194,6 @@
                 rel="alternate"
                 hreflang="zh-cn"
                 href="https://peterliao96.github.io/zh-cn/post/k8s/network/ingress/"
-                />
-  </url><url>
-    <loc>https://peterliao96.github.io/zh-cn/post/</loc>
-    <lastmod>2021-06-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://peterliao96.github.io/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://peterliao96.github.io/zh-cn/post/"
                 />
   </url><url>
     <loc>https://peterliao96.github.io/zh-cn/tags/%E6%9C%8D%E5%8A%A1service/</loc>

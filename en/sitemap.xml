@@ -595,5 +595,17 @@
                 hreflang="en"
                 href="https://peterliao96.github.io/algorithms/tree/leetcode_236/"
                 />
+  </url><url>
+    <loc>https://peterliao96.github.io/post/k8s/ckad/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://peterliao96.github.io/zh-cn/post/k8s/ckad/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://peterliao96.github.io/post/k8s/ckad/"
+                />
   </url>
 </urlset>
